@@ -14,6 +14,131 @@
     <script src="/js/default.js"></script>
 </head>
 <body>
-    <p>Content goes here</p>
+    <h1 id="debug">Content goes here</h1>
+
+    <script src="/js/three.min.js"></script>
+    <script>
+        // debug msg
+        var msg = document.getElementById("debug");
+
+        // Kinect set up
+        var kinect = WindowsPreview.Kinect;
+        var sensor = kinect.KinectSensor.getDefault();
+        var bodyFrameReader = sensor.bodyFrameSource.openReader();
+        bodyFrameReader.addEventListener("framearrived", readerBodyFrameArrived);
+        var bodies = new Array(sensor.bodyFrameSource.bodyCount);
+        sensor.open();
+
+        // Set up scene
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Set up lighting
+        scene.add(new THREE.AmbientLight(0xaaaaaa));
+        var light = new THREE.DirectionalLight(0xffffff, 1.5);
+        light.position.set(0, 0, 1000);
+        scene.add(light);
+
+        // Set up model
+        var mesh;
+
+        // Load model
+        var loader = new THREE.JSONLoader();
+        loader.load("models/joker/joker.js", createModel);
+
+        // Array of joints
+        var joints;
+
+        function readerBodyFrameArrived(args) {
+            //msg.innerHTML = "body frame has arrived!";
+
+            var bodyFrame = args.frameReference.acquireFrame();
+            if (bodyFrame == null) {
+                //msg.innerHTML = "there is no body in view!";
+                return;
+            }
+
+            bodyFrame.getAndRefreshBodyData(bodies);
+            bodyFrame.close();
+
+            // find a tracked body and store its joint positions
+            for (i = 0; i < bodies.length; i++) {
+                if (bodies[i].isTracked) {
+                    //msg.innerHTML = "body is being tracked!";
+                    var kinectJoints = bodies[i].joints;
+                    joints = new Array();
+                    for (i = 0; i < kinectJoints.size; i++) {
+                        var jointPosition = kinectJoints.lookup(i).position;
+                        joints.push({ x: jointPosition.x, y: jointPosition.y, z: -jointPosition.z });
+                    }
+
+                    break;
+                } else {
+                    //msg.innerHTML = "no body is being tracked!";
+                }
+            }
+        }
+
+        function createModel(geometry, materials) {
+            msg.innerHTML = "Called create model.";
+
+            for (i = 0; i < materials.length; i++) {
+                materials[i].skinning = true;
+            }
+
+            mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+            mesh.position.set(0, -2, -5);
+            mesh.scale.set(1, 1, 1);
+
+            for (i = 0; i < mesh.skeleton.bones.length; i++) {
+                mesh.skeleton.bones[i].useQuaternion = false;
+            }
+
+            scene.add(mesh);
+        }
+
+        function render() {
+            requestAnimationFrame(render);
+
+            // map inner representation of joints to model bones
+            if (mesh != null && joints != null) {
+                msg.innerHTML = "Mapping joints to model.";
+                
+                /*
+                // head
+                mesh.skeleton.bones[38].position.set(joints[3].x, joints[3].y, joints[3].z);
+                mesh.skeleton.bones[36].position.set(joints[2].x, joints[2].y, joints[2].z);
+                mesh.skeleton.bones[13].position.set(joints[20].x, joints[20].y, joints[20].z);
+                // left shoulder
+                mesh.skeleton.bones[40].position.set(joints[4].x, joints[4].y, joints[4].z);
+                mesh.skeleton.bones[42].position.set(joints[5].x, joints[5].y, joints[5].z);
+                // left wrist
+                mesh.skeleton.bones[43].position.set(joints[6].x, joints[6].y, joints[6].z);
+                mesh.skeleton.bones[14].position.set(joints[8].x, joints[8].y, joints[8].z);
+                mesh.skeleton.bones[16].position.set(joints[9].x, joints[9].y, joints[9].z);
+                mesh.skeleton.bones[17].position.set(joints[10].x, joints[10].y, joints[10].z);
+                mesh.skeleton.bones[12].position.set(joints[1].x, joints[1].y, joints[1].z);
+                mesh.skeleton.bones[2].position.set(joints[0].x, joints[0].y, joints[0].z);
+                mesh.skeleton.bones[7].position.set(joints[12].x, joints[12].y, joints[12].z);
+                mesh.skeleton.bones[8].position.set(joints[13].x, joints[13].y, joints[13].z);
+                mesh.skeleton.bones[9].position.set(joints[14].x, joints[14].y, joints[14].z);
+                mesh.skeleton.bones[10].position.set(joints[15].x, joints[15].y, joints[15].z);
+                mesh.skeleton.bones[3].position.set(joints[16].x, joints[16].y, joints[16].z);
+                mesh.skeleton.bones[4].position.set(joints[17].x, joints[17].y, joints[17].z);
+                mesh.skeleton.bones[5].position.set(joints[18].x, joints[18].y, joints[18].z);
+                mesh.skeleton.bones[6].position.set(joints[19].x, joints[19].y, joints[19].z);
+                */
+
+            } else {
+                msg.innerHTML = "The joints array is empty!";
+            }
+            renderer.render(scene, camera);
+        }
+        render();
+
+    </script>
 </body>
 </html>
