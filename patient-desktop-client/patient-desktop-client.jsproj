@@ -68,15 +68,25 @@
     <Content Include="models\joker\CHRNPCICOVIL110_FX.png" />
     <Content Include="models\joker\CHRNPCICOVIL110_NORMAL.png" />
     <Content Include="models\joker\joker.js" />
+    <Content Include="models\stan-lee\stan_lee.js" />
+    <Content Include="models\stan-lee\Stan_Lee_Body_D.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Body_N.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Body_S.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Eye_Reflection_D.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Glass_D.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Glass_N.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Hair_D.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Hair_N.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Hair_S.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Head_D.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Head_N.png" />
+    <Content Include="models\stan-lee\Stan_Lee_Head_S.png" />
     <None Include="patient-desktop-client_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="Microsoft.VCLibs, version=12.0" />
     <SDKReference Include="Microsoft.WinJS.2.0, Version=1.0" />
     <SDKReference Include="WindowsPreview.Kinect, Version=2.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="models\NewFolder\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment
