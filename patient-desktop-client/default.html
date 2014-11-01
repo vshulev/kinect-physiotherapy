@@ -47,10 +47,12 @@
 
         // Load model
         var loader = new THREE.JSONLoader();
-        loader.load("models/joker/joker.js", createModel);
+        loader.load("models/stan-lee/stan_lee.js", createModel);
 
         // Array of joints
         var joints;
+
+        var initialValues;
 
         function readerBodyFrameArrived(args) {
             //msg.innerHTML = "body frame has arrived!";
@@ -68,18 +70,93 @@
             for (i = 0; i < bodies.length; i++) {
                 if (bodies[i].isTracked) {
                     //msg.innerHTML = "body is being tracked!";
+                    console.log(bodies[i]);
                     var kinectJoints = bodies[i].jointOrientations;
                     joints = new Array();
                     for (i = 0; i < kinectJoints.size; i++) {
                         var jointPosition = kinectJoints.lookup(i).orientation;
                         joints.push({ w: jointPosition.w, x: jointPosition.x, y: jointPosition.y, z: jointPosition.z });
+
+                        extractRotationInDegrees(i);
                     }
+
+                    //convertAbsoluteValuesToRelative();
 
                     break;
                 } else {
                     //msg.innerHTML = "no body is being tracked!";
                 }
             }
+        }
+
+        function convertAbsoluteValuesToRelative() {
+            //console.log(joints[20].w + " x: " + joints[20].x + " y: " + joints[20].y + " z: " + joints[20].z);
+
+            convertJointAbsoluteToRelative(1, 0);
+            convertJointAbsoluteToRelative(20, 1);
+            convertJointAbsoluteToRelative(4, 20);
+            convertJointAbsoluteToRelative(5, 4);
+            convertJointAbsoluteToRelative(6, 5);
+            /*
+            ... and so on...
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            convertJointAbsoluteToRelative(0, 0);
+            */
+        }
+
+        function extractRotationInDegrees(jointIndex) {
+            var increment = 0.5;
+
+            var x = joints[jointIndex].x;
+            var y = joints[jointIndex].y;
+            var z = joints[jointIndex].z;
+            var w = joints[jointIndex].w;
+
+            var dPitch = Math.atan2(2 * (y * z + w * x), w * w - x * x - y * y + z * z) / Math.PI * 180.0;
+            var dYaw = Math.asin(2 * (w * y - x * z)) / Math.PI * 180.0;
+            var dRoll = Math.atan2(2 * (x * y + w * z), w * w + x * x - y * y - z * z) / Math.PI * 180.0;
+
+            var pitch = Math.floor((dPitch + increment / 2.0 * (dPitch > 0 ? 1.0 : -1.0)) / increment) * increment;
+            var yaw = Math.floor((dYaw + increment / 2.0 * (dYaw > 0 ? 1.0 : -1.0)) / increment) * increment;
+            var roll = Math.floor((dRoll + increment / 2.0 * (dRoll > 0 ? 1.0 : -1.0)) / increment) * increment;
+
+            joints[jointIndex].x = pitch;
+            joints[jointIndex].y = yaw;
+            joints[jointIndex].z = roll;
+        }
+
+        function convertJointAbsoluteToRelative(jointIndex, parentJointIndex) {
+            var child = new THREE.Quaternion(joints[jointIndex].x, joints[jointIndex].y, joints[jointIndex].z, joints[jointIndex].w);
+            var parent = new THREE.Quaternion(joints[parentJointIndex].x, joints[parentJointIndex].y, joints[parentJointIndex].z, joints[parentJointIndex].w);
+
+            parent = parent.inverse();
+            child = parent.multiply(child);
+
+            setJoint(jointIndex, child.x, child.y, child.z, child.w);
+        }
+
+        function setJoint(index, x, y, z, w) {
+            joints[index].x = x;
+            joints[index].y = y;
+            joints[index].z = z;
+            joints[index].w = w;
         }
 
         function createModel(geometry, materials) {
@@ -93,57 +170,45 @@
             mesh.position.set(0, -2, -5);
             mesh.scale.set(1, 1, 1);
 
-            for (i = 0; i < mesh.skeleton.bones.length; i++) {
-                mesh.skeleton.bones[i].useQuaternion = false;
-            }
-
             scene.add(mesh);
-        }
 
+            initialValues = mesh.skeleton.bones[0].quaternion;
+        }
+        
         function render() {
             requestAnimationFrame(render);
 
             // map inner representation of joints to model bones
             if (mesh != null && joints != null) {
                 msg.innerHTML = "Mapping joints to model.";
-                
-                // map kinect joints to model bones
+
+                mapBoneToJoint(8, 5);
                 /*
-                mapBoneToJoint(0, 0);
                 mapBoneToJoint(1, 1);
                 mapBoneToJoint(2, 20);
-                mapBoneToJoint(3, 2);
-                mapBoneToJoint(4, 2); // map unknown bone to neck
-                mapBoneToJoint(5, 8);
-                mapBoneToJoint(6, 9);
-                mapBoneToJoint(7, 10);
-                mapBoneToJoint(8, 4);
-                mapBoneToJoint(9, 5);
-                mapBoneToJoint(10, 6);
-                mapBoneToJoint(11, 16);
-                mapBoneToJoint(12, 17);
-                mapBoneToJoint(13, 18);
-                mapBoneToJoint(14, 19);
-                mapBoneToJoint(15, 12);
-                mapBoneToJoint(16, 15, 13);
-                mapBoneToJoint(17, 14);
-                mapBoneToJoint(18, 15);
                 */
 
-                mapBoneToJoint(7, 12);
-                mapBoneToJoint(8, 13);
             } else {
                 msg.innerHTML = "The joints array is empty!";
             }
+
             renderer.render(scene, camera);
         }
         render();
 
         function mapBoneToJoint(boneIndex, jointIndex) {
+            //console.log(mesh.skeleton.bones[boneIndex].name + " ***  w: " + joints[jointIndex].w + " x: " + joints[jointIndex].x + " y: " + joints[jointIndex].y + " z: " + joints[jointIndex].z);
+
+            mesh.skeleton.bones[boneIndex].rotation.x = joints[jointIndex].x;
+            mesh.skeleton.bones[boneIndex].rotation.y = joints[jointIndex].y;
+            mesh.skeleton.bones[boneIndex].rotation.z = joints[jointIndex].z;
+
+            /*
             mesh.skeleton.bones[boneIndex].quaternion.w = joints[jointIndex].w;
             mesh.skeleton.bones[boneIndex].quaternion.x = joints[jointIndex].x;
             mesh.skeleton.bones[boneIndex].quaternion.y = joints[jointIndex].y;
             mesh.skeleton.bones[boneIndex].quaternion.z = joints[jointIndex].z;
+            */
         }
 
     </script>
