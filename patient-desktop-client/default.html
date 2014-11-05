@@ -12,6 +12,7 @@
     <!-- patient_desktop_client references -->
     <link href="/css/default.css" rel="stylesheet" />
     <script src="/js/default.js"></script>
+    <script src="/js/kinect_data_extractor.js"></script>
 </head>
 <body>
     <h1 id="debug">Content goes here</h1>
@@ -52,8 +53,6 @@
         // Array of joints
         var joints;
 
-        var initialValues;
-
         function readerBodyFrameArrived(args) {
             //msg.innerHTML = "body frame has arrived!";
 
@@ -70,86 +69,18 @@
             for (i = 0; i < bodies.length; i++) {
                 if (bodies[i].isTracked) {
                     //msg.innerHTML = "body is being tracked!";
-                    console.log(bodies[i]);
                     var kinectJoints = bodies[i].jointOrientations;
                     joints = new Array();
                     for (i = 0; i < kinectJoints.size; i++) {
                         var jointPosition = kinectJoints.lookup(i).orientation;
                         joints.push({ w: jointPosition.w, x: jointPosition.x, y: jointPosition.y, z: jointPosition.z });
-
-                        extractRotationInDegrees(i);
                     }
-
-                    //convertAbsoluteValuesToRelative();
 
                     break;
                 } else {
                     //msg.innerHTML = "no body is being tracked!";
                 }
             }
-        }
-
-        function convertAbsoluteValuesToRelative() {
-            //console.log(joints[20].w + " x: " + joints[20].x + " y: " + joints[20].y + " z: " + joints[20].z);
-
-            convertJointAbsoluteToRelative(1, 0);
-            convertJointAbsoluteToRelative(20, 1);
-            convertJointAbsoluteToRelative(4, 20);
-            convertJointAbsoluteToRelative(5, 4);
-            convertJointAbsoluteToRelative(6, 5);
-            /*
-            ... and so on...
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            convertJointAbsoluteToRelative(0, 0);
-            */
-        }
-
-        function extractRotationInDegrees(jointIndex) {
-            var increment = 0.5;
-
-            var x = joints[jointIndex].x;
-            var y = joints[jointIndex].y;
-            var z = joints[jointIndex].z;
-            var w = joints[jointIndex].w;
-
-            var dPitch = Math.atan2(2 * (y * z + w * x), w * w - x * x - y * y + z * z) / Math.PI * 180.0;
-            var dYaw = Math.asin(2 * (w * y - x * z)) / Math.PI * 180.0;
-            var dRoll = Math.atan2(2 * (x * y + w * z), w * w + x * x - y * y - z * z) / Math.PI * 180.0;
-
-            var pitch = Math.floor((dPitch + increment / 2.0 * (dPitch > 0 ? 1.0 : -1.0)) / increment) * increment;
-            var yaw = Math.floor((dYaw + increment / 2.0 * (dYaw > 0 ? 1.0 : -1.0)) / increment) * increment;
-            var roll = Math.floor((dRoll + increment / 2.0 * (dRoll > 0 ? 1.0 : -1.0)) / increment) * increment;
-
-            joints[jointIndex].x = pitch;
-            joints[jointIndex].y = yaw;
-            joints[jointIndex].z = roll;
-        }
-
-        function convertJointAbsoluteToRelative(jointIndex, parentJointIndex) {
-            var child = new THREE.Quaternion(joints[jointIndex].x, joints[jointIndex].y, joints[jointIndex].z, joints[jointIndex].w);
-            var parent = new THREE.Quaternion(joints[parentJointIndex].x, joints[parentJointIndex].y, joints[parentJointIndex].z, joints[parentJointIndex].w);
-
-            parent = parent.inverse();
-            child = parent.multiply(child);
-
-            setJoint(jointIndex, child.x, child.y, child.z, child.w);
         }
 
         function setJoint(index, x, y, z, w) {
@@ -172,7 +103,69 @@
 
             scene.add(mesh);
 
-            initialValues = mesh.skeleton.bones[0].quaternion;
+            // direction vector
+
+            // Y & Z ARE FLIPPED & THIS FUCKS UP THE CALCULATION
+            // FOR NOW - FLIP THEM BACK MANUALLY
+            var x1 = mesh.skeleton.bones[1].position.x;
+            var y1 = mesh.skeleton.bones[1].position.z;
+            var z1 = mesh.skeleton.bones[1].position.y;
+
+            var x2 = mesh.skeleton.bones[2].position.x;
+            var y2 = mesh.skeleton.bones[2].position.z;
+            var z2 = mesh.skeleton.bones[2].position.y;
+
+            var dv = getDirectionVector(new THREE.Vector3(x1, y1, z1), new THREE.Vector3(x2, y2, z2));
+            dv.normalize();
+
+            // target vector
+            var tv = new THREE.Vector3(4, 1, 10); //new THREE.Vector3(1, 0, 0);
+            tv.normalize();
+
+            // axis vector
+            var axis = new THREE.Vector3().crossVectors(dv, tv);
+            axis.normalize();
+
+            // angle
+            var angle = dv.angleTo(tv);
+            console.log(angle);
+
+            // quaternion
+            var s = Math.sin(angle / 2);
+            var w = Math.cos(angle / 2);
+            var x = axis.x * s;
+            var y = axis.y * s;
+            var z = axis.z * s;
+            var quat = new THREE.Quaternion(x, y, z, w);
+            quat.normalize();
+
+            // apply rotation
+            mesh.skeleton.bones[1].quaternion.w = quat.w;
+            mesh.skeleton.bones[1].quaternion.x = quat.x;
+            mesh.skeleton.bones[1].quaternion.y = quat.y;
+            mesh.skeleton.bones[1].quaternion.z = quat.z;
+        }
+
+        // returns the global position of a given bone
+        function getGlobalBonePosition(bone) {
+            if (mesh == null) {
+                return null;
+            }
+
+            mesh.updateMatrixWorld(true);
+            var meshGlobal = new THREE.Vector3().setFromMatrixPosition(mesh.matrixWorld);
+
+            return new THREE.Vector3().setFromMatrixPosition(bone.matrixWorld);
+        }
+
+        function getDirectionVector(vec1, vec2) {
+            var res = new THREE.Vector3();
+            res.subVectors(vec2, vec1);
+            return res;
+        }
+
+        function getQuatFromTo(vec1, vec2) {
+
         }
         
         function render() {
@@ -181,13 +174,6 @@
             // map inner representation of joints to model bones
             if (mesh != null && joints != null) {
                 msg.innerHTML = "Mapping joints to model.";
-
-                mapBoneToJoint(8, 5);
-                /*
-                mapBoneToJoint(1, 1);
-                mapBoneToJoint(2, 20);
-                */
-
             } else {
                 msg.innerHTML = "The joints array is empty!";
             }
@@ -195,21 +181,6 @@
             renderer.render(scene, camera);
         }
         render();
-
-        function mapBoneToJoint(boneIndex, jointIndex) {
-            //console.log(mesh.skeleton.bones[boneIndex].name + " ***  w: " + joints[jointIndex].w + " x: " + joints[jointIndex].x + " y: " + joints[jointIndex].y + " z: " + joints[jointIndex].z);
-
-            mesh.skeleton.bones[boneIndex].rotation.x = joints[jointIndex].x;
-            mesh.skeleton.bones[boneIndex].rotation.y = joints[jointIndex].y;
-            mesh.skeleton.bones[boneIndex].rotation.z = joints[jointIndex].z;
-
-            /*
-            mesh.skeleton.bones[boneIndex].quaternion.w = joints[jointIndex].w;
-            mesh.skeleton.bones[boneIndex].quaternion.x = joints[jointIndex].x;
-            mesh.skeleton.bones[boneIndex].quaternion.y = joints[jointIndex].y;
-            mesh.skeleton.bones[boneIndex].quaternion.z = joints[jointIndex].z;
-            */
-        }
 
     </script>
 </body>
