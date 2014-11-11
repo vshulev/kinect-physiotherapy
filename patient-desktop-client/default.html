@@ -79,22 +79,23 @@
             { start: 0, end: 1, child: 1 },      // 0
             { start: 1, end: 20, child: 2 },     // 1
             { start: 20, end: 2, child: 3 },     // 2
-            { start: 2, end: 3, child: -1 },     // 3
-            { start: -1, end: -1, child: -1 },   // 4 - this bone is a mistake, it should be removed
-            { start: 20, end: 8, child: 6 },     // 5
-            { start: 8, end: 9, child: 7 },      // 6
-            { start: 9, end: 10, child: -1 },    // 7
+            { start: 2, end: 3, child: -1 },     // 3  _____
+            { start: 20, end: 8, child: 5 },     // 4
+            { start: 8, end: 9, child: 6 },      // 5
+            { start: 9, end: 10, child: 7 },     // 6
+            { start: 10, end: 11, child: -1 },   // 7  _____
             { start: 20, end: 4, child: 9 },     // 8
             { start: 4, end: 5, child: 10 },     // 9
-            { start: 5, end: 6, child: -1 },     // 10
-            { start: 0, end: 16, child: 12 },    // 11
-            { start: 12, end: 13, child: 13 },   // 12
+            { start: 5, end: 6, child: 11 },     // 10
+            { start: 6, end: 7, child: -1 },     // 11 _____
+            { start: 0, end: 16, child: 13 },    // 12
             { start: 16, end: 17, child: 14 },   // 13
-            { start: 18, end: 19, child: -1 },   // 14
-            { start: 0, end: 12, child: 16 },    // 15
-            { start: 12, end: 13, child: 17 },   // 16
-            { start: 13, end: 14, child: 18 },   // 17
-            { start: 14, end: 15, child: -1 },   // 18
+            { start: 17, end: 18, child: 15 },   // 14
+            { start: 18, end: 19, child: -1 },   // 15 _____
+            { start: 0, end: 12, child: 17 },    // 16
+            { start: 12, end: 13, child: 18 },   // 17
+            { start: 13, end: 14, child: 19 },   // 18
+            { start: 14, end: 15, child: -1 }    // 19 _____
         ];
 
         function readerBodyFrameArrived(args) {
@@ -139,65 +140,6 @@
             mesh.scale.set(1, 1, 1);
 
             scene.add(mesh);
-
-            // store direction vectors for each bone
-            for (i = 0; i < mapping.length; i++) {
-                var childIndex = mapping[i].child;
-                if (childIndex == -1) {
-                    mapping[i].dv = null;
-                    continue;
-                }
-
-                // get the parent and child bones (a.k.a. the two joints at each bone's end)
-                var parent = mesh.skeleton.bones[i];
-                var child = mesh.skeleton.bones[childIndex];
-
-                // get the GLOBAL positions of both bones (joints)
-                var parentPos = getGlobalBonePosition(parent);
-                var childPos = getGlobalBonePosition(child);
-
-                // store the coordinates (keep in mind y an z are flipped?)
-                var x1 = parentPos.x;
-                var y1 = parentPos.y;
-                var z1 = parentPos.z;
-
-                var x2 = childPos.x;
-                var y2 = childPos.y;
-                var z2 = childPos.z;
-
-                // caculate the direction vector that goes from start to end joint
-                var initDv = getDirectionVector(new THREE.Vector3(x1, y1, z1), new THREE.Vector3(x2, y2, z2));
-                initDv.normalize();
-
-                mapping[i].dv = initDv;
-
-                // save quaternion value just in case
-                var q = mesh.skeleton.bones[i].quaternion;
-                mapping[i].quat = new THREE.Quaternion(q.x, q.y, q.z, q.w);
-            }
-
-            //testMaTheory();
-        }
-
-        function testMaTheory() {
-            var dv = mapping[6].dv;
-            var tv = new THREE.Vector3(0, 1, 0);
-
-            var translationVec = getGlobalBonePosition(mesh.skeleton.bones[6]);
-
-            var dvTrans = new THREE.Vector3().addVectors(dv, translationVec);
-            var tvTrans = new THREE.Vector3().addVectors(tv, translationVec);
-
-            var dvLocal = mesh.skeleton.bones[6].worldToLocal(dvTrans);
-            var tvLocal = mesh.skeleton.bones[6].worldToLocal(tvTrans);
-
-            // working in local space from this point on
-            var axis = new THREE.Vector3().crossVectors(dvLocal, tvLocal);
-            axis.normalize();
-
-            var angle = dvLocal.angleTo(tvLocal);
-
-            mesh.skeleton.bones[6].rotateOnAxis(axis, angle);
         }
 
         // returns the global position of a given bone
@@ -206,6 +148,42 @@
                 return null;
             }
             return new THREE.Vector3().setFromMatrixPosition(bone.matrixWorld);
+        }
+
+        function setBoneDirectionVector(boneIndex) {
+            var childIndex = mapping[i].child;
+            // case when bone does not have a child bone
+            if (childIndex == -1) {
+                mapping[boneIndex].dv = null;
+                return;
+            }
+
+            // get the parent and child bones (a.k.a. the two joints at each bone's end)
+            var parent = mesh.skeleton.bones[boneIndex];
+            var child = mesh.skeleton.bones[childIndex];
+
+            // get the GLOBAL positions of both bones (joints)
+            var parentPos = getGlobalBonePosition(parent);
+            var childPos = getGlobalBonePosition(child);
+
+            // store the coordinates
+            var x1 = parentPos.x;
+            var y1 = parentPos.y;
+            var z1 = parentPos.z;
+
+            var x2 = childPos.x;
+            var y2 = childPos.y;
+            var z2 = childPos.z;
+
+            // caculate the direction vector that goes from start to end joint
+            var initDv = getDirectionVector(new THREE.Vector3(x1, y1, z1), new THREE.Vector3(x2, y2, z2));
+            initDv.normalize();
+
+            mapping[boneIndex].dv = initDv;
+
+            // save quaternion value just in case
+            var q = mesh.skeleton.bones[i].quaternion;
+            mapping[i].quat = new THREE.Quaternion(q.x, q.y, q.z, q.w);
         }
 
         function getDirectionVector(vec1, vec2) {
@@ -221,7 +199,9 @@
             if (mesh != null && joints != null) {
                 //msg.innerHTML = "Mapping joints to model.";
 
-                for (i = 6; i < 7/*mapping.length*/; i++) {
+                for (i = 0; i < mapping.length; i++) {
+                    setBoneDirectionVector(i);
+
                     if (mapping[i].dv == null) {
                         continue; // do not rotate end bones
                     }
@@ -261,27 +241,14 @@
                     // get rotation angle
                     var angle = dvLocal.angleTo(tvLocal);
 
-                    // apply rotation
+                    // rotaate bone
                     mesh.skeleton.bones[i].rotateOnAxis(axis, angle);
 
                     // update direction vector
                     mapping[i].dv = tv;
 
                     // calculate angle at left elbow
-                    var dv1 = getDirectionVector(
-                        new THREE.Vector3(joints[5].x, joints[5].y, joints[5].z),
-                        new THREE.Vector3(joints[6].x, joints[6].y, joints[6].z)
-                        );
-
-                    var dv2 = getDirectionVector(
-                        new THREE.Vector3(joints[5].x, joints[5].y, joints[5].z),
-                        new THREE.Vector3(joints[4].x, joints[4].y, joints[4].z)
-                    );
-
-                    var angleRad = dv1.angleTo(dv2);
-                    var angleDeg = angleRad * (180 / Math.PI);
-
-                    msg.innerHTML = "Angle is " + angleDeg;
+                    calculateLeftElbowAngle();
                 }
             } else {
                 msg.innerHTML = "The joints array is empty!";
@@ -290,7 +257,23 @@
             renderer.render(scene, camera);
         }
         render();
+        
+        function calculateLeftElbowAngle() {
+            var dv1 = getDirectionVector(
+                new THREE.Vector3(joints[5].x, joints[5].y, joints[5].z),
+                new THREE.Vector3(joints[6].x, joints[6].y, joints[6].z)
+            );
 
+            var dv2 = getDirectionVector(
+                new THREE.Vector3(joints[5].x, joints[5].y, joints[5].z),
+                new THREE.Vector3(joints[4].x, joints[4].y, joints[4].z)
+            );
+
+            var angleRad = dv1.angleTo(dv2);
+            var angleDeg = angleRad * (180 / Math.PI);
+
+            msg.innerHTML = "Angle is " + angleDeg;
+        }
     </script>
 </body>
 </html>
