@@ -62,14 +62,9 @@
     <Content Include="images\storelogo.scale-100.png" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
-    <Content Include="js\kinect_data_extractor.js" />
-    <Content Include="js\kinect_data_processor.js" />
+    <Content Include="js\kinect\KinectDataProcessor.js" />
+    <Content Include="js\OrbitControls.js" />
     <Content Include="js\three.min.js" />
-    <Content Include="models\joker\CHRNPCICOVIL110_ALPHA.png" />
-    <Content Include="models\joker\CHRNPCICOVIL110_DIFFUSE.png" />
-    <Content Include="models\joker\CHRNPCICOVIL110_FX.png" />
-    <Content Include="models\joker\CHRNPCICOVIL110_NORMAL.png" />
-    <Content Include="models\joker\joker.js" />
     <Content Include="models\stan-lee\stan_lee.js" />
     <Content Include="models\stan-lee\Stan_Lee_Body_D.png" />
     <Content Include="models\stan-lee\Stan_Lee_Body_N.png" />
@@ -83,6 +78,10 @@
     <Content Include="models\stan-lee\Stan_Lee_Head_D.png" />
     <Content Include="models\stan-lee\Stan_Lee_Head_N.png" />
     <Content Include="models\stan-lee\Stan_Lee_Head_S.png" />
+    <Content Include="textures\grass.jpg" />
+    <Content Include="textures\stone.jpg" />
+    <Content Include="textures\wood.png" />
+    <Content Include="textures\wood1.png" />
     <None Include="patient-desktop-client_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

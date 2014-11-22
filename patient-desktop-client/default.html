@@ -12,15 +12,54 @@
     <!-- patient_desktop_client references -->
     <link href="/css/default.css" rel="stylesheet" />
     <script src="/js/default.js"></script>
-    <script src="/js/kinect_data_extractor.js"></script>
 </head>
 <body>
-    <h1 id="debug">Content goes here</h1>
+    <!-- ---------------- Custom Shader Code ------------------------ -->
+    <!--
+        Author: Lee Stemkoski
+        Taken from: http://stemkoski.github.io/Three.js/
+    -->
+    <script id="vertexShader" type="x-shader/x-vertex">
+        uniform vec3 viewVector;
+        uniform float c;
+        uniform float p;
+        varying float intensity;
+        void main()
+        {
+        vec3 vNormal = normalize( normalMatrix * normal );
+        vec3 vNormel = normalize( normalMatrix * viewVector );
+        intensity = pow( c - dot(vNormal, vNormel), p );
 
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+        }
+    </script>
+
+    <script id="fragmentShader" type="x-shader/x-vertex">
+        uniform vec3 glowColor;
+        varying float intensity;
+        void main()
+        {
+        vec3 glow = glowColor * intensity;
+        gl_FragColor = vec4( glow, 1.0 );
+        }
+    </script>
+    <!-- ----------------------------------------------------------- -->
+
+    <!-- Scripts to be executed after document loaded -->
     <script src="/js/three.min.js"></script>
+    <script src="/js/OrbitControls.js"></script>
     <script>
-        // debug msg
-        var msg = document.getElementById("debug");
+        /*************************
+         *                       *
+         * Configuration options *
+         *                       *
+         *************************/
+
+        var displayAxis = false;
+        var displayModelOutline = false;
+        var displayShaderGlow = false;
+
+        /*************************/
 
         // Kinect set up
         var kinect = WindowsPreview.Kinect;
@@ -36,11 +75,21 @@
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
+        camera.position.z = 6;
+        camera.position.y = 4;
+
+        // Set up mouse orbit controls
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        // Display the axis
+        if (displayAxis) {
+            scene.add(new THREE.AxisHelper(100));
+        }
 
         // Set up lighting
-        scene.add(new THREE.AmbientLight(0xaaaaaa));
-        var light = new THREE.DirectionalLight(0xffffff, 1.5);
-        light.position.set(0, 0, 1000);
+        scene.add(new THREE.AmbientLight(0xffffff));
+        var light = new THREE.PointLight(0xffffff, 1, 100)
+        light.position.set(0, 2, 5);
         scene.add(light);
 
         // Set up model
@@ -50,31 +99,26 @@
         var loader = new THREE.JSONLoader();
         loader.load("models/stan-lee/stan_lee.js", createModel);
 
+        // Set up environment
+        var groundTexture = THREE.ImageUtils.loadTexture("textures/wood.png");
+        groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping; // ???
+        groundTexture.repeat.set(10, 10); // ???
+
+        var ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(10, 10),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                ambient: 0x333333, // ???
+                map: groundTexture
+            }));
+        ground.rotation.x = -Math.PI / 2;
+
+        scene.add(ground);
+
         // Array of joints
         var joints;
 
-        // Bone - Joint mapping
-        // TODO change mapping legend to reflect actual mapping...
-        // bones[0] - { 0 - Spine base, 1 - Spine mid }
-        // bones[1] - { 1 - Spine mid, 20 - Spine shoulder }
-        // bones[2] - { 20 - Spine shoulder, 2 - Neck }
-        // bones[3] - { 2 - Neck, 3 - Head }
-        // bones[4] - N/A
-        // bones[5] - { 20 - Spine shoulder, 4 - Shoulder left }
-        // bones[6] - { 4 - Shoulder left, 5 - Elbow left }
-        // bones[7] - { 5 - Elbow left, 6 - Wrist left }
-        // bones[8] - { 20 - Spine shoulder, 8 - Shoulder right }
-        // bones[9] - { 8 - Shoulder right, 9 - Elbow right }
-        // bones[10] - { 9 - Elbow right, 10 - Wrist right }
-        // bones[11] - { 0 - Spine base, 12 - Hip left }
-        // bones[12] - { 12 - Hip left, 13 - Knee left }
-        // bones[13] - { 13 - Knee left, 14 - Ankle left }
-        // bones[14] - { 14 - Ankle left, 15 - Foot left }
-        // bones[15] - { 0 - Spine base, 16 - Hip right } 
-        // bones[16] - { 16 - Hip right, 17 - Knee right }
-        // bones[17] - { 17 - Knee right, 18 - Ankle right }
-        // bones[18] - { 18 - Ankle right, 19 - Foot right }
-
+        // bone - joint mapping
         var mapping = [
             { start: 0, end: 1, child: 1 },      // 0
             { start: 1, end: 20, child: 2 },     // 1
@@ -99,11 +143,8 @@
         ];
 
         function readerBodyFrameArrived(args) {
-            //msg.innerHTML = "body frame has arrived!";
-
             var bodyFrame = args.frameReference.acquireFrame();
             if (bodyFrame == null) {
-                //msg.innerHTML = "there is no body in view!";
                 return;
             }
 
@@ -113,7 +154,6 @@
             // find a tracked body and store its joint positions
             for (i = 0; i < bodies.length; i++) {
                 if (bodies[i].isTracked) {
-                    //msg.innerHTML = "body is being tracked!";
                     var kinectJoints = bodies[i].joints;
                     joints = new Array();
                     for (i = 0; i < kinectJoints.size; i++) {
@@ -122,25 +162,73 @@
                     }
 
                     break;
-                } else {
-                    //msg.innerHTML = "no body is being tracked!";
                 }
             }
         }
 
+        /**********************************
+         *                                *
+         * Create model and apply effects *
+         *                                *
+         **********************************/
+
         function createModel(geometry, materials) {
-            msg.innerHTML = "Called create model.";
 
             for (i = 0; i < materials.length; i++) {
                 materials[i].skinning = true;
             }
 
             mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
-            mesh.position.set(0, -2, -5);
             mesh.scale.set(1, 1, 1);
 
             scene.add(mesh);
+
+            // render model outline
+            if (displayModelOutline) {
+                var outlineMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xff0000,
+                    wireframe: true,
+                    transparent: true
+                });
+                var outlineMesh = new THREE.Mesh(geometry, outlineMaterial);
+                outlineMesh.position = mesh.position;
+
+                scene.add(outlineMesh);
+            }
+
+            // render glow
+            if (displayShaderGlow) {
+                var glowMaterial = new THREE.ShaderMaterial({
+                    uniforms: {
+                        "c": { type: "f", value: 1.5 }, // opacity?
+                        "p": { type: "f", value: 1.4 },
+                        glowColor: { type: "c", value: new THREE.Color(0xff0000) },
+                        viewVector: { type: "v3", value: camera.position }
+                    },
+                    vertexShader: document.getElementById("vertexShader").textContent,
+                    fragmentShader: document.getElementById("fragmentShader").textContent,
+                    side: THREE.FrontSide,
+                    blending: THREE.AdditiveBlending,
+                    transparent: true
+                });
+
+                var glowMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.18, 1), glowMaterial);
+
+                // position
+                glowMesh.position.x = 0.25;
+                glowMesh.position.y = 0.5;
+                glowMesh.position.z = -0.05;
+
+                // rotation
+                glowMesh.rotation.x += 0.1;
+                glowMesh.rotation.z += 0.05;
+
+                scene.add(glowMesh);
+            }
+
         }
+
+        /**********************************/
 
         // returns the global position of a given bone
         function getGlobalBonePosition(bone) {
@@ -151,6 +239,8 @@
         }
 
         function setBoneDirectionVector(boneIndex) {
+            // I suspect the direction vector for each bone is in fact the local vector (0, 0, 1)
+
             var childIndex = mapping[i].child;
             // case when bone does not have a child bone
             if (childIndex == -1) {
@@ -192,14 +282,21 @@
             return res;
         }
         
+        var prevDv = null;
+        var currDv = null;
         function render() {
             requestAnimationFrame(render);
 
             // map inner representation of joints to model bones
             if (mesh != null && joints != null) {
-                //msg.innerHTML = "Mapping joints to model.";
 
-                for (i = 0; i < mapping.length; i++) {
+                for (i = 6; i < 7/*mapping.length*/; i++) {
+                    
+                    currDv = getDirectionVector(new THREE.Vector3(joints[10].x, joints[10].y, joints[10].z), new THREE.Vector3(joints[24].x, joints[24].y, joints[24].z));
+                    if (prevDv == null) {
+                        prevDv = currDv;
+                    }
+
                     setBoneDirectionVector(i);
 
                     if (mapping[i].dv == null) {
@@ -241,20 +338,23 @@
                     // get rotation angle
                     var angle = dvLocal.angleTo(tvLocal);
 
-                    // rotaate bone
+                    // rotate bone
                     mesh.skeleton.bones[i].rotateOnAxis(axis, angle);
+                    mesh.skeleton.bones[i].rotateOnAxis(tvLocal, 0.1);
 
                     // update direction vector
+                    // TODO is this really necessary??
                     mapping[i].dv = tv;
 
                     // calculate angle at left elbow
                     calculateLeftElbowAngle();
                 }
-            } else {
-                msg.innerHTML = "The joints array is empty!";
             }
 
             renderer.render(scene, camera);
+
+            // update controls
+            controls.update();
         }
         render();
         
@@ -272,7 +372,7 @@
             var angleRad = dv1.angleTo(dv2);
             var angleDeg = angleRad * (180 / Math.PI);
 
-            msg.innerHTML = "Angle is " + angleDeg;
+            //msg.innerHTML = "Angle is " + angleDeg;
         }
     </script>
 </body>
