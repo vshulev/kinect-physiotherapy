@@ -62,7 +62,11 @@
     <Content Include="images\storelogo.scale-100.png" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
-    <Content Include="js\kinect\KinectDataProcessor.js" />
+    <Content Include="js\domain\BodyData.js" />
+    <Content Include="js\domain\Bone.js" />
+    <Content Include="js\domain\BoneType.js" />
+    <Content Include="js\domain\JointBoneMapper.js" />
+    <Content Include="js\kinect\KinectDataExtractor.js" />
     <Content Include="js\OrbitControls.js" />
     <Content Include="js\three.min.js" />
     <Content Include="models\stan-lee\stan_lee.js" />
@@ -88,6 +92,9 @@
     <SDKReference Include="Microsoft.VCLibs, version=12.0" />
     <SDKReference Include="Microsoft.WinJS.2.0, Version=1.0" />
     <SDKReference Include="WindowsPreview.Kinect, Version=2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="js\scene\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment
