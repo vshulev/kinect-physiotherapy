@@ -1,6 +1,7 @@
 ﻿
 function KinectDataExtractor() {
 
+    console.log("Initialize sensor");
 
     /* the SDK Kinect object */
     var kinect = WindowsPreview.Kinect;
@@ -23,9 +24,13 @@ function KinectDataExtractor() {
      */
     var joints = null;
 
+    /* TODO temp counter var */
+    var frameNum = 0;
+
     /* starts the Kinect sensor */
     this.startSensor = function () {
         if (!running) {
+            console.log("starting sensor");
             sensor.open();
             running = true;
         }
@@ -46,6 +51,8 @@ function KinectDataExtractor() {
 
     /* called every time a new body frame is read from the sensor */
     function readerBodyFrameArrived(args) {
+        console.log("Read body frame " + frameNum++);
+
         // get bodies data from frame
         var bodyFrame = args.frameReference.acquireFrame();
         if (bodyFrame == null) {

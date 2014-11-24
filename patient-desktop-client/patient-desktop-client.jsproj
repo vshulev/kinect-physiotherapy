@@ -68,8 +68,11 @@
     <Content Include="js\domain\JointBoneMapper.js" />
     <Content Include="js\kinect\KinectDataExtractor.js" />
     <Content Include="js\OrbitControls.js" />
+    <Content Include="js\scene\Model.js" />
+    <Content Include="js\scene\Scene.js" />
     <Content Include="js\three.min.js" />
     <Content Include="models\stan-lee\stan_lee.js" />
+    <Content Include="models\stan-lee\stan_lee_arm.js" />
     <Content Include="models\stan-lee\Stan_Lee_Body_D.png" />
     <Content Include="models\stan-lee\Stan_Lee_Body_N.png" />
     <Content Include="models\stan-lee\Stan_Lee_Body_S.png" />
@@ -82,6 +85,7 @@
     <Content Include="models\stan-lee\Stan_Lee_Head_D.png" />
     <Content Include="models\stan-lee\Stan_Lee_Head_N.png" />
     <Content Include="models\stan-lee\Stan_Lee_Head_S.png" />
+    <Content Include="models\stan-lee\stan_lee_right_arm.js" />
     <Content Include="textures\grass.jpg" />
     <Content Include="textures\stone.jpg" />
     <Content Include="textures\wood.png" />
@@ -92,9 +96,6 @@
     <SDKReference Include="Microsoft.VCLibs, version=12.0" />
     <SDKReference Include="Microsoft.WinJS.2.0, Version=1.0" />
     <SDKReference Include="WindowsPreview.Kinect, Version=2.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="js\scene\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment

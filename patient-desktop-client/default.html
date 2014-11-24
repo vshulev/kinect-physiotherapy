@@ -14,7 +14,7 @@
     <script src="/js/default.js"></script>
 </head>
 <body>
-    <!-- ---------------- Custom Shader Code ------------------------ -->
+    <!-- ********************* Custom Shader Code ********************* -->
     <!--
         Author: Lee Stemkoski
         Taken from: http://stemkoski.github.io/Three.js/
@@ -43,337 +43,76 @@
         gl_FragColor = vec4( glow, 1.0 );
         }
     </script>
-    <!-- ----------------------------------------------------------- -->
+    <!-- **************************************************************- -->
 
     <!-- Scripts to be executed after document loaded -->
     <script src="/js/three.min.js"></script>
     <script src="/js/OrbitControls.js"></script>
+
+    <script src="/js/kinect/KinectDataExtractor.js"></script>
+    <script src="/js/domain/BodyData.js"></script>
+    <script src="/js/domain/Bone.js"></script>
+    <script src="/js/domain/BoneType.js"></script>
+    <script src="/js/domain/JointBoneMapper.js"></script>
+    <script src="/js/scene/Scene.js"></script>
+    <script src="/js/scene/Model.js"></script>
+    
     <script>
-        /*************************
-         *                       *
-         * Configuration options *
-         *                       *
-         *************************/
 
-        var displayAxis = false;
-        var displayModelOutline = false;
-        var displayShaderGlow = false;
-
-        /*************************/
-
-        // Kinect set up
+        /* the SDK Kinect object */
         var kinect = WindowsPreview.Kinect;
+
+        /* the Kinect sensor */
         var sensor = kinect.KinectSensor.getDefault();
+
+        /* A reader object which reads body frames from the sensor */
         var bodyFrameReader = sensor.bodyFrameSource.openReader();
         bodyFrameReader.addEventListener("framearrived", readerBodyFrameArrived);
+
+        /* an empty array that will store body objects read from the sensor */
         var bodies = new Array(sensor.bodyFrameSource.bodyCount);
+
         sensor.open();
 
-        // Set up scene
-        var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        var renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-        camera.position.z = 6;
-        camera.position.y = 4;
+        /* indicates wether the Kinect sensor is running */
+        var running = false;
 
-        // Set up mouse orbit controls
-        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+        /* an array for storing joints data
+         * each joint is of type WindowsPreview.Kinect
+         */
+        var joints = null;
 
-        // Display the axis
-        if (displayAxis) {
-            scene.add(new THREE.AxisHelper(100));
-        }
+        /* TODO temp counter var */
+        var frameNum = 0;
 
-        // Set up lighting
-        scene.add(new THREE.AmbientLight(0xffffff));
-        var light = new THREE.PointLight(0xffffff, 1, 100)
-        light.position.set(0, 2, 5);
-        scene.add(light);
-
-        // Set up model
-        var mesh;
-
-        // Load model
-        var loader = new THREE.JSONLoader();
-        loader.load("models/stan-lee/stan_lee.js", createModel);
-
-        // Set up environment
-        var groundTexture = THREE.ImageUtils.loadTexture("textures/wood.png");
-        groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping; // ???
-        groundTexture.repeat.set(10, 10); // ???
-
-        var ground = new THREE.Mesh(
-            new THREE.PlaneGeometry(10, 10),
-            new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                ambient: 0x333333, // ???
-                map: groundTexture
-            }));
-        ground.rotation.x = -Math.PI / 2;
-
-        scene.add(ground);
-
-        // Array of joints
-        var joints;
-
-        // bone - joint mapping
-        var mapping = [
-            { start: 0, end: 1, child: 1 },      // 0
-            { start: 1, end: 20, child: 2 },     // 1
-            { start: 20, end: 2, child: 3 },     // 2
-            { start: 2, end: 3, child: -1 },     // 3  _____
-            { start: 20, end: 8, child: 5 },     // 4
-            { start: 8, end: 9, child: 6 },      // 5
-            { start: 9, end: 10, child: 7 },     // 6
-            { start: 10, end: 11, child: -1 },   // 7  _____
-            { start: 20, end: 4, child: 9 },     // 8
-            { start: 4, end: 5, child: 10 },     // 9
-            { start: 5, end: 6, child: 11 },     // 10
-            { start: 6, end: 7, child: -1 },     // 11 _____
-            { start: 0, end: 16, child: 13 },    // 12
-            { start: 16, end: 17, child: 14 },   // 13
-            { start: 17, end: 18, child: 15 },   // 14
-            { start: 18, end: 19, child: -1 },   // 15 _____
-            { start: 0, end: 12, child: 17 },    // 16
-            { start: 12, end: 13, child: 18 },   // 17
-            { start: 13, end: 14, child: 19 },   // 18
-            { start: 14, end: 15, child: -1 }    // 19 _____
-        ];
-
+        /* called every time a new body frame is read from the sensor */
         function readerBodyFrameArrived(args) {
+            //console.log("Read body frame " + frameNum++);
+
+            // get bodies data from frame
             var bodyFrame = args.frameReference.acquireFrame();
             if (bodyFrame == null) {
                 return;
             }
-
             bodyFrame.getAndRefreshBodyData(bodies);
             bodyFrame.close();
 
             // find a tracked body and store its joint positions
             for (i = 0; i < bodies.length; i++) {
+                // find a tracked body and exit loop as soon as one is found
                 if (bodies[i].isTracked) {
                     var kinectJoints = bodies[i].joints;
                     joints = new Array();
                     for (i = 0; i < kinectJoints.size; i++) {
-                        var jointPosition = kinectJoints.lookup(i).position;
-                        joints.push({ x: jointPosition.x, y: jointPosition.y, z: jointPosition.z });
+                        joints.push(kinectJoints.lookup(i));
                     }
-
                     break;
                 }
             }
         }
 
-        /**********************************
-         *                                *
-         * Create model and apply effects *
-         *                                *
-         **********************************/
+        new Scene().beginRendering();
 
-        function createModel(geometry, materials) {
-
-            for (i = 0; i < materials.length; i++) {
-                materials[i].skinning = true;
-            }
-
-            mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
-            mesh.scale.set(1, 1, 1);
-
-            scene.add(mesh);
-
-            // render model outline
-            if (displayModelOutline) {
-                var outlineMaterial = new THREE.MeshBasicMaterial({
-                    color: 0xff0000,
-                    wireframe: true,
-                    transparent: true
-                });
-                var outlineMesh = new THREE.Mesh(geometry, outlineMaterial);
-                outlineMesh.position = mesh.position;
-
-                scene.add(outlineMesh);
-            }
-
-            // render glow
-            if (displayShaderGlow) {
-                var glowMaterial = new THREE.ShaderMaterial({
-                    uniforms: {
-                        "c": { type: "f", value: 1.5 }, // opacity?
-                        "p": { type: "f", value: 1.4 },
-                        glowColor: { type: "c", value: new THREE.Color(0xff0000) },
-                        viewVector: { type: "v3", value: camera.position }
-                    },
-                    vertexShader: document.getElementById("vertexShader").textContent,
-                    fragmentShader: document.getElementById("fragmentShader").textContent,
-                    side: THREE.FrontSide,
-                    blending: THREE.AdditiveBlending,
-                    transparent: true
-                });
-
-                var glowMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.18, 1), glowMaterial);
-
-                // position
-                glowMesh.position.x = 0.25;
-                glowMesh.position.y = 0.5;
-                glowMesh.position.z = -0.05;
-
-                // rotation
-                glowMesh.rotation.x += 0.1;
-                glowMesh.rotation.z += 0.05;
-
-                scene.add(glowMesh);
-            }
-
-        }
-
-        /**********************************/
-
-        // returns the global position of a given bone
-        function getGlobalBonePosition(bone) {
-            if (mesh == null) {
-                return null;
-            }
-            return new THREE.Vector3().setFromMatrixPosition(bone.matrixWorld);
-        }
-
-        function setBoneDirectionVector(boneIndex) {
-            // I suspect the direction vector for each bone is in fact the local vector (0, 0, 1)
-
-            var childIndex = mapping[i].child;
-            // case when bone does not have a child bone
-            if (childIndex == -1) {
-                mapping[boneIndex].dv = null;
-                return;
-            }
-
-            // get the parent and child bones (a.k.a. the two joints at each bone's end)
-            var parent = mesh.skeleton.bones[boneIndex];
-            var child = mesh.skeleton.bones[childIndex];
-
-            // get the GLOBAL positions of both bones (joints)
-            var parentPos = getGlobalBonePosition(parent);
-            var childPos = getGlobalBonePosition(child);
-
-            // store the coordinates
-            var x1 = parentPos.x;
-            var y1 = parentPos.y;
-            var z1 = parentPos.z;
-
-            var x2 = childPos.x;
-            var y2 = childPos.y;
-            var z2 = childPos.z;
-
-            // caculate the direction vector that goes from start to end joint
-            var initDv = getDirectionVector(new THREE.Vector3(x1, y1, z1), new THREE.Vector3(x2, y2, z2));
-            initDv.normalize();
-
-            mapping[boneIndex].dv = initDv;
-
-            // save quaternion value just in case
-            var q = mesh.skeleton.bones[i].quaternion;
-            mapping[i].quat = new THREE.Quaternion(q.x, q.y, q.z, q.w);
-        }
-
-        function getDirectionVector(vec1, vec2) {
-            var res = new THREE.Vector3();
-            res.subVectors(vec2, vec1);
-            return res;
-        }
-        
-        var prevDv = null;
-        var currDv = null;
-        function render() {
-            requestAnimationFrame(render);
-
-            // map inner representation of joints to model bones
-            if (mesh != null && joints != null) {
-
-                for (i = 6; i < 7/*mapping.length*/; i++) {
-                    
-                    currDv = getDirectionVector(new THREE.Vector3(joints[10].x, joints[10].y, joints[10].z), new THREE.Vector3(joints[24].x, joints[24].y, joints[24].z));
-                    if (prevDv == null) {
-                        prevDv = currDv;
-                    }
-
-                    setBoneDirectionVector(i);
-
-                    if (mapping[i].dv == null) {
-                        continue; // do not rotate end bones
-                    }
-
-                    // get start and end joint (Kinect indices)
-                    var sjIndex = mapping[i].start; // start joint index
-                    var ejIndex = mapping[i].end; // end joint index
-
-                    // avoid bone 4 which serves no function
-                    if(sjIndex == -1) {
-                        continue;
-                    }
-
-                    var startJoint = joints[sjIndex];
-                    var endJoint = joints[ejIndex];
-
-                    // calculate target vector
-                    var tv = getDirectionVector(
-                        new THREE.Vector3(startJoint.x, startJoint.y, -startJoint.z),
-                        new THREE.Vector3(endJoint.x, endJoint.y, -endJoint.z));
-                    tv.normalize();
-
-                    // translate dv and tv
-                    var translationVec = getGlobalBonePosition(mesh.skeleton.bones[i]);
-
-                    var dvTrans = new THREE.Vector3().addVectors(mapping[i].dv, translationVec);
-                    var tvTrans = new THREE.Vector3().addVectors(tv, translationVec);
-
-                    // convert world vectors to local vectors
-                    var dvLocal = mesh.skeleton.bones[i].worldToLocal(dvTrans);
-                    var tvLocal = mesh.skeleton.bones[i].worldToLocal(tvTrans);
-
-                    // get rotation axis
-                    var axis = new THREE.Vector3().crossVectors(dvLocal, tvLocal);
-                    axis.normalize();
-
-                    // get rotation angle
-                    var angle = dvLocal.angleTo(tvLocal);
-
-                    // rotate bone
-                    mesh.skeleton.bones[i].rotateOnAxis(axis, angle);
-                    mesh.skeleton.bones[i].rotateOnAxis(tvLocal, 0.1);
-
-                    // update direction vector
-                    // TODO is this really necessary??
-                    mapping[i].dv = tv;
-
-                    // calculate angle at left elbow
-                    calculateLeftElbowAngle();
-                }
-            }
-
-            renderer.render(scene, camera);
-
-            // update controls
-            controls.update();
-        }
-        render();
-        
-        function calculateLeftElbowAngle() {
-            var dv1 = getDirectionVector(
-                new THREE.Vector3(joints[5].x, joints[5].y, joints[5].z),
-                new THREE.Vector3(joints[6].x, joints[6].y, joints[6].z)
-            );
-
-            var dv2 = getDirectionVector(
-                new THREE.Vector3(joints[5].x, joints[5].y, joints[5].z),
-                new THREE.Vector3(joints[4].x, joints[4].y, joints[4].z)
-            );
-
-            var angleRad = dv1.angleTo(dv2);
-            var angleDeg = angleRad * (180 / Math.PI);
-
-            //msg.innerHTML = "Angle is " + angleDeg;
-        }
     </script>
 </body>
 </html>
