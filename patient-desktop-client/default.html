@@ -14,6 +14,21 @@
     <script src="/js/default.js"></script>
 </head>
 <body>
+    
+    <!-- Audio files -->
+    <audio id="exercise_start">
+        <source src="/audio/exercise_start.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="exercise_done">
+        <source src="/audio/exercise_done.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="rep_done">
+        <source src="/audio/rep_done.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Textual information -->
+    <h1 id="msg">Please fully extend your right arm to start exercise.</h1>
+
     <!-- ********************* Custom Shader Code ********************* -->
     <!--
         Author: Lee Stemkoski
@@ -54,6 +69,7 @@
     <script src="/js/domain/Bone.js"></script>
     <script src="/js/domain/BoneType.js"></script>
     <script src="/js/domain/JointBoneMapper.js"></script>
+    <script src="/js/domain/Exercise.js"></script>
     <script src="/js/scene/Scene.js"></script>
     <script src="/js/scene/Model.js"></script>
     
@@ -87,7 +103,6 @@
 
         /* called every time a new body frame is read from the sensor */
         function readerBodyFrameArrived(args) {
-            //console.log("Read body frame " + frameNum++);
 
             // get bodies data from frame
             var bodyFrame = args.frameReference.acquireFrame();

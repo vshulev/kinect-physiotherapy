@@ -36,12 +36,23 @@ function Bone(type) {
     this.recalculateDirectionVector = function (jointData) {
         var sj = jointData[startJoint].position;
         var ej = jointData[endJoint].position;
-        directionVector = new THREE.Vector3()
-            .subVectors(
-                new THREE.Vector3(sj.x, sj.y, -sj.z),
-                new THREE.Vector3(ej.x, ej.y, -ej.z)
-                )
-            .normalize();
+
+        if (shouldSetDirectionVector(sj, ej)) {
+            directionVector = new THREE.Vector3()
+                .subVectors(
+                    new THREE.Vector3(sj.x, sj.y, -sj.z),
+                    new THREE.Vector3(ej.x, ej.y, -ej.z)
+                    )
+                .normalize();
+        } else {
+            directionVector = null;
+        }
+    }
+
+    function shouldSetDirectionVector(start, end) {
+        return start.trackingState != WindowsPreview.Kinect.TrackingState.notTracked
+            && end.trackingState != WindowsPreview.Kinect.TrackingState.notTracked
+            && !(start.trackingState == WindowsPreview.Kinect.TrackingState.inferred && end.trackingState == WindowsPreview.Kinect.TrackingState.inferred);
     }
 
 }
