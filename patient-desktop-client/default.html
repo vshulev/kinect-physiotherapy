@@ -119,8 +119,11 @@
                     var kinectJoints = bodies[i].joints;
                     joints = new Array();
                     for (i = 0; i < kinectJoints.size; i++) {
+                        var joint = kinectJoints.lookup(i);
                         joints.push(kinectJoints.lookup(i));
+                        console.log(joint.position.x + " " + joint.position.y + " " + joint.position.z);
                     }
+                    console.log("*****");
                     break;
                 }
             }

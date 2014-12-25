@@ -92,6 +92,7 @@ Model = function(theScene, theCamera) {
 
         mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
         mesh.scale.set(1, 1, 1);
+        mesh.castShadow = true;
 
         scene.add(mesh);
 

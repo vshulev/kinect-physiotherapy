@@ -75,6 +75,7 @@
     <Content Include="js\scene\Model.js" />
     <Content Include="js\scene\Scene.js" />
     <Content Include="js\three.min.js" />
+    <Content Include="models\room.js" />
     <Content Include="models\stan-lee\stan_lee.js" />
     <Content Include="models\stan-lee\stan_lee_arm.js" />
     <Content Include="models\stan-lee\Stan_Lee_Body_D.png" />
