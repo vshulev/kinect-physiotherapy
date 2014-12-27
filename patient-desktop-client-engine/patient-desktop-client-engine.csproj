@@ -9,7 +9,7 @@
     <ProjectGuid>{FB0F2BF2-0C08-4718-A78E-8234E53355BC}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>patient_desktop_client_engine</RootNamespace>
+    <RootNamespace>PatientDesktopClientEngine</RootNamespace>
     <AssemblyName>patient-desktop-client-engine</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
@@ -111,10 +111,12 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BodyDataExtractor.cs" />
+    <Compile Include="src\exercise\Exercise.cs" />
+    <Compile Include="src\kinect\BodyDataReader.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>

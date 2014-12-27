@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace patient_desktop_client_engine
+namespace PatientDesktopClientEngine
 {
     public sealed class Class1
     {
