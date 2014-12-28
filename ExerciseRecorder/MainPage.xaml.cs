@@ -13,9 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-using WindowsPreview.Kinect;
-
-//using PatientDesktopClientEngine.Kinect;
+using PatientDesktopClientEngine;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -29,12 +27,8 @@ namespace ExerciseRecorder
         public MainPage()
         {
             this.InitializeComponent();
-            //BodyDataReader bdr = new BodyDataReader();
-            //bdr.StartSensor();
-
-            KinectSensor sensor = KinectSensor.GetDefault();
-            sensor.Open();
-
+            BodyDataReader bdr = new BodyDataReader();
+            bdr.StartSensor();
         }
     }
 }

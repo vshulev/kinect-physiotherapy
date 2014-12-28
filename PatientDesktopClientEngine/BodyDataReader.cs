@@ -1,22 +1,24 @@
 ﻿using System.Collections.Generic;
 using WindowsPreview.Kinect;
 
-namespace PatientDesktopClientEngine.Kinect
+namespace PatientDesktopClientEngine
 {
     public sealed class BodyDataReader
     {
         private bool sensorRunning;
         private KinectSensor sensor;
         private BodyFrameReader reader;
-        private IList<Body> bodies;
+        private Body[] bodies;
         private IReadOnlyDictionary<JointType, Joint> joints;
-            
+
         public BodyDataReader()
         {
             sensorRunning = false;
             sensor = KinectSensor.GetDefault();
             reader = sensor.BodyFrameSource.OpenReader();
             reader.FrameArrived += reader_FrameArrived;
+
+            bodies = new Body[sensor.BodyFrameSource.BodyCount];
         }
 
         public void StartSensor()
@@ -52,7 +54,7 @@ namespace PatientDesktopClientEngine.Kinect
             bodyFrame.GetAndRefreshBodyData(bodies);
             bodyFrame.Dispose();
 
-            for (int i = 0; i < bodies.Count; i++)
+            for (int i = 0; i < bodies.Length; i++)
             {
                 if (bodies[i].IsTracked)
                 {

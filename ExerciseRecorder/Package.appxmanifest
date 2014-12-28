@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="32664eca-5ff9-44a8-9710-6fb471511358" Publisher="CN=Velizar" Version="1.0.0.0" />
+  <Identity Name="a8b34787-a213-435b-9887-3a356319c6ee" Publisher="CN=Velizar" Version="1.0.0.0" />
   <Properties>
-    <DisplayName>exercise-recorder</DisplayName>
+    <DisplayName>ExerciseRecorder</DisplayName>
     <PublisherDisplayName>Velizar</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="ExerciseRecorder.App">
-      <m2:VisualElements DisplayName="ExerciseRecorder" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="exercise-recorder" ForegroundText="light" BackgroundColor="#464646">
+      <m2:VisualElements DisplayName="ExerciseRecorder" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="ExerciseRecorder" ForegroundText="light" BackgroundColor="#464646">
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
     </Application>
