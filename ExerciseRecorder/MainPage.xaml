@@ -8,6 +8,8 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <Viewbox Grid.Row="1" HorizontalAlignment="Center">
+            <Grid x:Name="DisplayGrid" Background="Black" Width="512" Height="414"/>
+        </Viewbox>
     </Grid>
 </Page>

@@ -5,7 +5,6 @@ namespace PatientDesktopClientEngine
 {
     public sealed class BodyDataReader
     {
-        private bool sensorRunning;
         private KinectSensor sensor;
         private BodyFrameReader reader;
         private Body[] bodies;
@@ -13,7 +12,6 @@ namespace PatientDesktopClientEngine
 
         public BodyDataReader()
         {
-            sensorRunning = false;
             sensor = KinectSensor.GetDefault();
             reader = sensor.BodyFrameSource.OpenReader();
             reader.FrameArrived += reader_FrameArrived;
@@ -23,19 +21,17 @@ namespace PatientDesktopClientEngine
 
         public void StartSensor()
         {
-            if (!sensorRunning)
+            if (!sensor.IsOpen)
             {
                 sensor.Open();
-                sensorRunning = true;
             }
         }
 
         public void StopSensor()
         {
-            if (sensorRunning)
+            if (sensor.IsOpen)
             {
                 sensor.Close();
-                sensorRunning = false;
             }
         }
 
