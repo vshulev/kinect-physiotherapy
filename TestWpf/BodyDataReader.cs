@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WindowsPreview.Kinect;
+using Microsoft.Kinect;
 
 // TODO change namespace - add organization name & project name!
 namespace PatientDesktopClientEngine
@@ -66,7 +66,7 @@ namespace PatientDesktopClientEngine
         }
 
         // the event which gets fired when a body frame arrives
-        private void reader_FrameArrived(BodyFrameReader sender, BodyFrameArrivedEventArgs args)
+        private void reader_FrameArrived(object sender, BodyFrameArrivedEventArgs args)
         {
 
             // acqure a fresh body frame if one is available
