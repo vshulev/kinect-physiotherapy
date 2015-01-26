@@ -5,7 +5,7 @@ using Microsoft.Kinect;
 namespace PatientDesktopClient.Readers
 {
 
-    public delegate void BodyDataReadHandler(object source, BodyDataReadEventArgs e);
+    delegate void BodyDataReadHandler(object source, BodyDataReadEventArgs e);
 
     sealed class BodyDataReader
     {
@@ -39,8 +39,10 @@ namespace PatientDesktopClient.Readers
                 {
                     bodyFrame.GetAndRefreshBodyData(bodies);
                     storeJointData();
+                    // TODO use BeginInvoke instead
                     if (BodyDataRead != null)
                         BodyDataRead(this, new BodyDataReadEventArgs(joints, jointOrientations));
+                        //BodyDataRead.BeginInvoke(this, new BodyDataReadEventArgs(joints, jointOrientations), null, null);
                 }
             }
         }

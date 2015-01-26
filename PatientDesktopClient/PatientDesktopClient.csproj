@@ -47,6 +47,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="res\models\axes\axes.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="res\models\character_male\textures\brown_eye.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -89,6 +92,12 @@
     <Content Include="res\models\character_male\textures\young_lightskinned_male_diffuse.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="vgbtechs\AdaBoostTech.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="vgbtechs\RFRProgressTech.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="App.config" />
     <Content Include="cfg\plugins.cfg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -106,10 +115,19 @@
     <Content Include="res\models\character_male\character_male.skeleton">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="res\models\axes\axes.mesh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\axes\OgreCore.material">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Kinect.2.0.1410.19000\lib\net45\Microsoft.Kinect.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Kinect.VisualGestureBuilder, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
+      <HintPath>..\packages\Microsoft.Kinect.VisualGestureBuilder.2.0.1410.19000\lib\net45\Microsoft.Kinect.VisualGestureBuilder.dll</HintPath>
     </Reference>
     <Reference Include="Mogre">
       <HintPath>..\packages\Mogre1.7.4.1.0.6\lib\Mogre.dll</HintPath>
@@ -120,6 +138,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="exercises\arm_raise\" />
     <Folder Include="src\IO\" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +163,7 @@
     <Compile Include="src\Readers\BodyDataReader.cs" />
     <Compile Include="src\Readers\GestureReader.cs" />
     <Compile Include="src\UI\Scene\ExerciseScene.cs" />
+    <Compile Include="src\UI\Scene\JointPair.cs" />
     <Compile Include="src\UI\Scene\MainCharacter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
