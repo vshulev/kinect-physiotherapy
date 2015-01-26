@@ -38,7 +38,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -47,20 +47,48 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="res\models\character_male\textures\brown_eye.png" />
-    <Content Include="res\models\character_male\textures\eyebrow012.png" />
-    <Content Include="res\models\character_male\textures\jeans01_ao.png" />
-    <Content Include="res\models\character_male\textures\jeans01_normals.png" />
-    <Content Include="res\models\character_male\textures\jeans_basic_diffuse.png" />
-    <Content Include="res\models\character_male\textures\lit_caucasian.png" />
-    <Content Include="res\models\character_male\textures\lit_hair.png" />
-    <Content Include="res\models\character_male\textures\lit_matte.png" />
-    <Content Include="res\models\character_male\textures\male01_diffuse_red.png" />
-    <Content Include="res\models\character_male\textures\shirt_normals.png" />
-    <Content Include="res\models\character_male\textures\shirt_texture.png" />
-    <Content Include="res\models\character_male\textures\shoes02_default.png" />
-    <Content Include="res\models\character_male\textures\skinmat_eye.png" />
-    <Content Include="res\models\character_male\textures\young_lightskinned_male_diffuse.png" />
+    <Content Include="res\models\character_male\textures\brown_eye.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\eyebrow012.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\jeans01_ao.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\jeans01_normals.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\jeans_basic_diffuse.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\lit_caucasian.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\lit_hair.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\lit_matte.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\male01_diffuse_red.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\shirt_normals.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\shirt_texture.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\shoes02_default.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\skinmat_eye.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\young_lightskinned_male_diffuse.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="App.config" />
     <Content Include="cfg\plugins.cfg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -69,9 +97,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
-    <None Include="res\models\character_male\character_male.material" />
-    <None Include="res\models\character_male\character_male.mesh" />
-    <None Include="res\models\character_male\character_male.skeleton" />
+    <Content Include="res\models\character_male\character_male.material">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\character_male.mesh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\character_male.skeleton">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -107,7 +141,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\App.cs" />
+    <Compile Include="src\Readers\BodyDataReader.cs" />
+    <Compile Include="src\Readers\GestureReader.cs" />
     <Compile Include="src\UI\Scene\ExerciseScene.cs" />
+    <Compile Include="src\UI\Scene\MainCharacter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

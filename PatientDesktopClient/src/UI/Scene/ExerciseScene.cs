@@ -25,6 +25,8 @@ namespace PatientDesktopClient.UI.Scene
             renderWindow = root.Initialise(true, "Kinect Physiotherapy"); //root.CreateRenderWindow("Kinect Physiotherapy", 320, 240, false);
             sceneManager = root.CreateSceneManager(SceneType.ST_INTERIOR);
             mainCam = sceneManager.CreateCamera("MainCam");
+            mainCam.AspectRatio = 16.0f / 9.0f;
+            mainCam.SetPosition(0, 15, 30);
             viewport = renderWindow.AddViewport(mainCam);
 
             root.FrameRenderingQueued += new FrameListener.FrameRenderingQueuedHandler(onFrameRenderingQueued);
