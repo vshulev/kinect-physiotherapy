@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Mogre;
 using Microsoft.Kinect;
 using PatientDesktopClient.Readers;
+using PatientDesktopClient.Scoring;
 
 namespace PatientDesktopClient.UI.Scene
 {
@@ -25,6 +27,7 @@ namespace PatientDesktopClient.UI.Scene
             createEntity(mgr);
             initializeSkeleton();
             BodyDataReader.Instance.BodyDataRead += bodyDataRead;
+            GestureScorer.Instance.GestureScoreUpdated += gestureScoreUpdated;
         }
 
         public void Update()
@@ -117,6 +120,11 @@ namespace PatientDesktopClient.UI.Scene
             if (joints == null)
                 return Vector3.ZERO;
             return new Vector3(joints[joint].Position.X, joints[joint].Position.Y, -joints[joint].Position.Z);
+        }
+
+        private void gestureScoreUpdated(object source, GestureScoreUpdatedEventArgs e)
+        {
+            //Console.WriteLine(e.Score);
         }
 
     }

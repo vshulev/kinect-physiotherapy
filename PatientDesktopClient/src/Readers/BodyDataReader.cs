@@ -33,6 +33,9 @@ namespace PatientDesktopClient.Readers
 
         private void frameArrived(object sender, BodyFrameArrivedEventArgs e)
         {
+            if (BodyDataRead == null)
+                return;
+
             using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
             {
                 if (bodyFrame!= null)
@@ -40,11 +43,11 @@ namespace PatientDesktopClient.Readers
                     bodyFrame.GetAndRefreshBodyData(bodies);
                     storeJointData();
                     // TODO use BeginInvoke instead
-                    if (BodyDataRead != null)
-                        BodyDataRead(this, new BodyDataReadEventArgs(joints, jointOrientations));
-                        //BodyDataRead.BeginInvoke(this, new BodyDataReadEventArgs(joints, jointOrientations), null, null);
+                    BodyDataRead(this, new BodyDataReadEventArgs(joints, jointOrientations));
+                    //BodyDataRead.BeginInvoke(this, new BodyDataReadEventArgs(joints, jointOrientations), null, null);
                 }
             }
+            GestureReader.Instance.Track(CurrentTrackingId);
         }
 
         private void storeJointData()

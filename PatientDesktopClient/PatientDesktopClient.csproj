@@ -105,6 +105,9 @@
     <Content Include="cfg\resources.cfg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="exercises\arm_raise\arm_raise.gbd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <Content Include="res\models\character_male\character_male.material">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -138,7 +141,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="exercises\arm_raise\" />
     <Folder Include="src\IO\" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +164,9 @@
     <Compile Include="src\App.cs" />
     <Compile Include="src\Readers\BodyDataReader.cs" />
     <Compile Include="src\Readers\GestureReader.cs" />
+    <Compile Include="src\Scoring\FluidityScorer.cs" />
+    <Compile Include="src\Scoring\GestureScorer.cs" />
+    <Compile Include="src\Scoring\IScorer.cs" />
     <Compile Include="src\UI\Scene\ExerciseScene.cs" />
     <Compile Include="src\UI\Scene\JointPair.cs" />
     <Compile Include="src\UI\Scene\MainCharacter.cs" />
