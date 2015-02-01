@@ -62,10 +62,9 @@ namespace PatientDesktopClient.Scoring
                 //    Console.Write("=");
                 //}
                 //Console.WriteLine("");
-                
+                lastScore = score;
                 if (!float.IsNaN(score))
                 {
-                    lastScore = score;
                     totalScore += score;
                     numScores++;
                 }

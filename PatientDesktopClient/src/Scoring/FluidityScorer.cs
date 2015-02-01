@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace PatientDesktopClient.Scoring
@@ -8,34 +9,24 @@ namespace PatientDesktopClient.Scoring
 
         public float Score(IReadOnlyList<float> progressValues)
         {
-            // create a list of speeds
-            List<float> speeds = new List<float>();
-            for (int i = 0; i < progressValues.Count - 1; i++)
-                speeds.Add(Math.Abs(progressValues[i] - progressValues[i + 1]));
+            if (progressValues.Count < 2)
+                return 0;
 
-            // compute standard deviation
-            float mean = Mean(speeds);
-            float sum = 0;
-            foreach (float speed in speeds)
-                sum += (float)Math.Pow(speed - mean, 2);
+            //// create a list of speeds
+            //List<float> speeds = new List<float>();
+            //for (int i = 0; i < progressValues.Count - 1; i++)
+            //    speeds.Add(Math.Abs(progressValues[i] - progressValues[i + 1]));
 
-            return sum / speeds.Count;
-            //float standardDeviation = (float)Math.Sqrt(sum / speeds.Count);
+            //// compute standard deviation
+            //float avg = speeds.Average();
+            //float variance = speeds.Sum(s => (float) Math.Pow(s - avg, 2)) / speeds.Count;
+            //return (float) Math.Sqrt(variance);
 
-            //// compute worst possible standard deviation
-            //float a = Math.Min(Math.Abs(0 - mean), Math.Abs(1 - mean));
-            //sum = (float)(2 * (Math.Pow(a, 2)));
-            //float worstStandardDeviation = (float)Math.Sqrt(sum / 2);
-
-            //return 1 - standardDeviation / worstStandardDeviation;
+            float avg = progressValues.Average();
+            float variance = progressValues.Sum(s => (float)Math.Pow(s - avg, 2)) / progressValues.Count;
+            return (float)Math.Sqrt(variance);
+        
         }
 
-        private float Mean(List<float> values)
-        {
-            float total = 0;
-            foreach (float val in values)
-                total += val;
-            return total / values.Count;
-        }
     }
 }
