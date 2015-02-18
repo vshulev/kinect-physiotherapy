@@ -1,5 +1,6 @@
 ﻿using System;
 using Mogre;
+using System.Collections.Generic;
 
 namespace PatientDesktopClient.UI.Scene
 {
@@ -7,12 +8,20 @@ namespace PatientDesktopClient.UI.Scene
     {
         private static readonly string PLUGINS_CFG = "cfg/plugins.cfg";
         private static readonly string RESOURCES_CFG = "cfg/resources.cfg";
+        public static readonly List<string> SUPPORTED_RENDER_SYSTEMS = new List<string>()
+        {
+            "Direct3D9 Rendering Subsystem",
+            "Direct3D9Ex Rendering Subsystem",
+            "Direct3D11 Rendering Subsystem",
+        };
 
         private Root root;
         private RenderWindow renderWindow;
         private SceneManager sceneManager;
         private Camera mainCam;
         private Viewport viewport;
+
+        private RenderTexture renderTarget;
 
         private MainCharacter model;
 
@@ -29,6 +38,19 @@ namespace PatientDesktopClient.UI.Scene
             loadResources();
             createScene();
             root.FrameRenderingQueued += new FrameListener.FrameRenderingQueuedHandler(onFrameRenderingQueued);
+            TexturePtr texture = TextureManager.Singleton.CreateManual(
+                "RttTexture", 
+                ResourceGroupManager.DEFAULT_RESOURCE_GROUP_NAME, 
+                TextureType.TEX_TYPE_2D, 
+                (uint)viewport.ActualWidth, 
+                (uint)viewport.ActualHeight, 
+                0, 
+                PixelFormat.PF_A8R8G8B8, 
+                (int)TextureUsage.TU_RENDERTARGET);
+
+            renderTarget = texture.GetBuffer().GetRenderTarget();
+            renderTarget.AddViewport(mainCam);
+            renderTarget.GetViewport(0).SetClearEveryFrame(true);
         }
 
         public void Start()
@@ -47,7 +69,7 @@ namespace PatientDesktopClient.UI.Scene
         private void setupViewport()
         {
             viewport = renderWindow.AddViewport(mainCam);
-            viewport.BackgroundColour = ColourValue.Black;
+            viewport.BackgroundColour = new ColourValue(0.6784314f, 0.8470588f, 0.9019608f);
             mainCam.AspectRatio = ((float) viewport.ActualWidth) / viewport.ActualHeight;
         }
 
@@ -89,6 +111,7 @@ namespace PatientDesktopClient.UI.Scene
 
         private bool onFrameRenderingQueued(FrameEvent evt)
         {
+            renderTarget.Update();
             model.Update();
             return true;
         }

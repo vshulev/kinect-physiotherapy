@@ -1,0 +1,224 @@
+material desktop_0_base
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 0.301961 0.278431 0.278431 1
+            diffuse 1.000000 1.000000 1.000000 1.000000
+            specular 0.027451 0.027451 0.027451 64.000000
+            emissive 0.196078 0.101961 0.101961
+
+            depth_write on
+
+            texture_unit diffuseTexture
+            {
+                texture textures/young_lightskinned_male_diffuse.png
+            }
+
+            //texture_unit litsphereTexture
+            //{
+            //    texture textures/lit_caucasian.png
+            //}
+
+        }
+    }
+}
+
+material desktop_1_mhair01
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 0.110000 0.110000 0.110000 1
+            diffuse 1.000000 1.000000 1.000000 1.000000
+            specular 0.027451 0.027451 0.027451 122.880000
+            emissive 0.000000 0.000000 0.000000
+
+            depth_write off
+            alpha_rejection greater 128
+
+            texture_unit diffuseTexture
+            {
+                texture textures/male01_diffuse_red.png
+            }
+
+            //texture_unit litsphereTexture
+            //{
+            //    texture textures/lit_hair.png
+            //}
+
+        }
+    }
+}
+
+material desktop_2_low_poly
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 0.110000 0.110000 0.110000 1
+            diffuse 1.000000 1.000000 1.000000 1.000000
+            specular 1.000000 1.000000 1.000000 128.000000
+            emissive 0.000000 0.000000 0.000000
+
+            depth_write off
+            alpha_rejection greater 128
+
+            texture_unit diffuseTexture
+            {
+                texture textures/brown_eye.png
+            }
+
+            //texture_unit litsphereTexture
+            //{
+            //    texture textures/skinmat_eye.png
+            //}
+
+        }
+    }
+}
+
+material desktop_3_eyebrow012
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 1.000000 1.000000 1.000000 1
+            diffuse 1.000000 1.000000 1.000000 1.000000
+            specular 0.000000 0.000000 0.000000 64.000000
+            emissive 0.000000 0.000000 0.000000
+
+            depth_write off
+            alpha_rejection greater 128
+
+            texture_unit diffuseTexture
+            {
+                texture textures/eyebrow012.png
+            }
+
+        }
+    }
+}
+
+material desktop_4_shirt01
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 1.000000 1.000000 1.000000 1
+            diffuse 1.000000 1.000000 1.000000 1.000000
+            specular 0.031373 0.031373 0.031373 25.100800
+            emissive 0.000000 0.000000 0.000000
+
+            depth_write on
+
+            texture_unit diffuseTexture
+            {
+                texture textures/shirt_texture.png
+            }
+
+            //texture_unit normalMapTexture
+            //{
+            //    texture textures/shirt_normals.png
+            //}
+
+            //texture_unit litsphereTexture
+            //{
+            //    texture textures/lit_matte.png
+            //}
+
+        }
+    }
+}
+
+material desktop_5_jeans01
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 1.000000 1.000000 1.000000 1
+            diffuse 1.000000 1.000000 1.000000 1.000000
+            specular 0.027451 0.027451 0.027451 25.100800
+            emissive 0.000000 0.000000 0.000000
+
+            depth_write on
+
+            texture_unit diffuseTexture
+            {
+                texture textures/jeans_basic_diffuse.png
+            }
+
+            //texture_unit normalMapTexture
+            //{
+            //    texture textures/jeans01_normals.png
+            //}
+
+            //texture_unit aoMapTexture
+            //{
+            //    texture textures/jeans01_ao.png
+            //}
+
+            //texture_unit litsphereTexture
+            //{
+            //    texture textures/lit_matte.png
+            //}
+
+        }
+    }
+}
+
+material desktop_6_shoes02
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 1.000000 1.000000 1.000000 1
+            diffuse 1.000000 1.000000 1.000000 1.000000
+            specular 0.050980 0.047059 0.047059 102.400000
+            emissive 0.000000 0.000000 0.000000
+
+            depth_write on
+
+            texture_unit diffuseTexture
+            {
+                texture textures/shoes02_default.png
+            }
+
+        }
+    }
+}

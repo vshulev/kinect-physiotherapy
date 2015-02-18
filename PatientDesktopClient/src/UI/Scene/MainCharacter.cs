@@ -32,6 +32,8 @@ namespace PatientDesktopClient.UI.Scene
 
         public void Update()
         {
+            skeleton.GetBone("upper_arm.L").Roll(0.1f);
+
             if (joints == null)
                 return;
 

@@ -171,6 +171,9 @@
     <Compile Include="src\UI\Scene\JointPair.cs" />
     <Compile Include="src\UI\Scene\MainCharacter.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
