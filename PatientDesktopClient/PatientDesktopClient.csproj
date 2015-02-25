@@ -72,12 +72,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BodyDataReader.cs" />
     <Compile Include="Exercise.xaml.cs">
       <DependentUpon>Exercise.xaml</DependentUpon>
     </Compile>
     <Compile Include="ExerciseStart.xaml.cs">
       <DependentUpon>ExerciseStart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GestureReader.cs" />
+    <Compile Include="GestureScorer.cs" />
+    <Compile Include="JointPair.cs" />
+    <Compile Include="MainCharacter.cs" />
     <Compile Include="StringCollection.cs" />
     <Page Include="Exercise.xaml">
       <SubType>Designer</SubType>
@@ -133,6 +138,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="cfg\resources.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="exercises\arm_abduction\arm_abduction.gbd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
