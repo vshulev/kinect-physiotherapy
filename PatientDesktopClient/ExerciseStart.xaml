@@ -3,34 +3,42 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:kinect="http://schemas.microsoft.com/kinect/2014"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
 	Title="ExerciseStart">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="8*" />
-            <RowDefinition Height="4*" />
-        </Grid.RowDefinitions>
+    <kinect:KinectRegion x:Name="kinectRegion">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="5*" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <Button Grid.Column="0" Grid.Row="0">Profile</Button>
-        <Button Grid.Column="2" Grid.Row="0">Main Menu</Button>
-        <Button Grid.Column="2" Grid.Row="0">Previous</Button>
-        <Button Grid.Column="2" Grid.Row="0">Next</Button>
-        <Button Grid.Column="2" Grid.Row="0">Exit</Button>
+            <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                <Button Width="100" Height="100" Margin="10">Profile</Button>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Width="100" Height="100" Margin="10" Click="mainClicked">Main</Button>
+                <Button Width="100" Height="100" Margin="10">Previous</Button>
+                <Button Width="100" Height="100" Margin="10">Next</Button>
+                <Button Width="100" Height="100" Margin="10" Click="exitClicked">Exit</Button>
+            </StackPanel>
+
+            <kinect:KinectUserViewer Grid.Column="0" Grid.Row="1" Margin="10" />
+            <Image Grid.Column="1" Grid.Row="1" Margin="100" Source="res/images/chart.png" />
+            <Image Grid.Column="2" Grid.Row="1" Margin="10" Source="res/images/video.png" />
         
-        <Button Grid.Column="0" Grid.Row="1">Calibrate</Button>
-        <Button Grid.Column="1" Grid.Row="1">Rating</Button>
-        <Button Grid.Column="2" Grid.Row="1">Video</Button>
-        
-        <Button Grid.Column="0" Grid.Row="2">Instructions</Button>
+            <Button Grid.Column="0" Grid.Row="2" Click="startClicked">Instructions</Button>
 
-    </Grid>
+        </Grid>
+    </kinect:KinectRegion>
 </Page>

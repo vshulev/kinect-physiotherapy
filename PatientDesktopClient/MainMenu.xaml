@@ -34,7 +34,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="8*" />
-                <RowDefinition Height="4*" />
+                <!--<RowDefinition Height="4*" />-->
             </Grid.RowDefinitions>
         
             <Grid.ColumnDefinitions>
@@ -42,12 +42,34 @@
                 <ColumnDefinition Width="4*" />
             </Grid.ColumnDefinitions>
         
-            <Button Grid.Column="0" Grid.Row="0">Profile</Button>
-            <Button Grid.Column="1" Grid.Row="0">Social</Button>
-            <Button Grid.Column="1" Grid.Row="0">Settings</Button>
-            <Button Grid.Column="1" Grid.Row="0" Click="exitClicked">Exit</Button>
-        
-            <fk:ElementFlow x:Name="exerciseSelect"
+            <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                <Button Width="100" Height="100" Margin="10">Profile</Button>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Width="100" Height="100" Margin="10">Social</Button>
+                <Button Width="100" Height="100" Margin="10">Settings</Button>
+                <Button Width="100" Height="100" Margin="10" Click="exitClicked">Exit</Button>
+            </StackPanel>
+
+            <ScrollViewer
+                Grid.Column="0"
+                Grid.Row="1"
+                Margin="10"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Disabled"
+                x:Name="exerciseSelect">
+                <StackPanel Orientation="Horizontal" CanHorizontallyScroll="True" Background="Gold">
+                    <Button Width="250" Height="250" Margin="10">B</Button>
+                    <Button Width="250" Height="250" Margin="10" Click="exerciseClicked">Arm abduction</Button>
+                    <Button Width="250" Height="250" Margin="10">B</Button>
+                    <Button Width="250" Height="250" Margin="10">B</Button>
+                    <Button Width="250" Height="250" Margin="10">B</Button>
+                    <Button Width="250" Height="250" Margin="10">B</Button>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!--<fk:ElementFlow x:Name="exerciseSelect"
                             Grid.Row="1"
                             Grid.Column="0"
                             ItemsSource="{DynamicResource DataSource}"
@@ -67,11 +89,9 @@
                                        Position="0, 2, 3"
                                        LookDirection="0, -2, -3" />
                 </fk:ElementFlow.Camera>
-            </fk:ElementFlow>
-        
-            <Button Grid.Column="1" Grid.Row="1">Rating</Button>
-        
-            <Button Grid.Column="0" Grid.Row="2">Exercise name</Button>
+            </fk:ElementFlow>-->
+
+            <Image Grid.Column="1" Grid.Row="1" Margin="150" Source="res/images/chart.png" />
         </Grid>
     </kinect:KinectRegion>
 </Page>

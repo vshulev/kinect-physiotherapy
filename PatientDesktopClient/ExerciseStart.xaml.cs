@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Kinect;
+using Microsoft.Kinect.Wpf.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,10 @@ namespace PatientDesktopClient
         public ExerciseStart()
         {
             InitializeComponent();
+
+            KinectRegion.SetKinectRegion(this, kinectRegion);
+            this.kinectRegion.KinectSensor = KinectSensor.GetDefault();
+            
             Loaded += pageLoaded;
         }
 
@@ -31,5 +37,21 @@ namespace PatientDesktopClient
             //MainMenu menu = new MainMenu();
             //this.NavigationService.Navigate(menu);
         }
+
+        private void mainClicked(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.Navigate(new MainMenu());
+        }
+
+        private void exitClicked(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void startClicked(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.Navigate(new Exercise());
+        }
+
     }
 }

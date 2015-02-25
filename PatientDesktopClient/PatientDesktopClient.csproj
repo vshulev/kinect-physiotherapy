@@ -47,6 +47,12 @@
     <Reference Include="Microsoft.Kinect.Wpf.Controls, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Kinect.Wpf.Controls.2.0.1410.19000\lib\net4.5\Microsoft.Kinect.Wpf.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="Mogre">
+      <HintPath>..\packages\Mogre1.7.4.1.0.6\lib\Mogre.dll</HintPath>
+    </Reference>
+    <Reference Include="MogreNewt">
+      <HintPath>..\packages\Mogre1.7.4.1.0.6\lib\MogreNewt.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -66,10 +72,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Exercise.xaml.cs">
+      <DependentUpon>Exercise.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExerciseStart.xaml.cs">
       <DependentUpon>ExerciseStart.xaml</DependentUpon>
     </Compile>
     <Compile Include="StringCollection.cs" />
+    <Page Include="Exercise.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ExerciseStart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -116,18 +129,77 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="cfg\plugins.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cfg\resources.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Content Include="res\models\character_male\character_male.material">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\character_male.mesh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\character_male.skeleton">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\FluidKit.dll" />
+    <Resource Include="res\images\chart.png" />
+    <Resource Include="res\images\video.png" />
+    <Content Include="res\models\character_male\textures\brown_eye.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\eyebrow012.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\jeans01_ao.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\jeans01_normals.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\jeans_basic_diffuse.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\lit_caucasian.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\lit_hair.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\lit_matte.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\male01_diffuse_red.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\shirt_normals.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\shirt_texture.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\shoes02_default.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\skinmat_eye.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\models\character_male\textures\young_lightskinned_male_diffuse.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="vgbtechs\AdaBoostTech.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -140,6 +212,18 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+if $(ConfigurationName) == Debug (
+    if EXIST "$(SolutionDir)\packages\Mogre1.7.4.1.0.6\tools\Mogre.Dependencies.Debug\Mogre.dll" (
+        copy "$(SolutionDir)\packages\Mogre1.7.4.1.0.6\tools\Mogre.Dependencies.Debug\*" "$(TargetDir))"
+    ) ELSE (
+        copy "$(SolutionDir)\packages\Mogre1.7.4.1.0.6\tools\Mogre.Dependencies.Release\*" "$(TargetDir)"
+    )
+) ELSE (
+    copy "$(SolutionDir)\packages\Mogre1.7.4.1.0.6\tools\Mogre.Dependencies.Release\*" "$(TargetDir)"
+)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
