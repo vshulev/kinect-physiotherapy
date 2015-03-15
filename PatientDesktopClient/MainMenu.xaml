@@ -43,13 +43,18 @@
             </Grid.ColumnDefinitions>
         
             <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
-                <Button Width="100" Height="100" Margin="10">Profile</Button>
+                <Button Width="100" Height="100" Margin="10">
+                    <Image Margin="10" Source="res/images/profile.png" />
+                </Button>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Width="100" Height="100" Margin="10">Social</Button>
-                <Button Width="100" Height="100" Margin="10">Settings</Button>
-                <Button Width="100" Height="100" Margin="10" Click="exitClicked">Exit</Button>
+                <Button Width="100" Height="100" Margin="10">
+                    <Image Margin="10" Source="res/images/settings.png" />
+                </Button>
+                <Button Width="100" Height="100" Margin="10" Click="exitClicked">
+                    <Image Margin="10" Source="res/images/power.png" />
+                </Button>
             </StackPanel>
 
             <ScrollViewer
@@ -60,12 +65,42 @@
                 VerticalScrollBarVisibility="Disabled"
                 x:Name="exerciseSelect">
                 <StackPanel Orientation="Horizontal" CanHorizontallyScroll="True" Background="Gold">
-                    <Button Width="250" Height="250" Margin="10">B</Button>
-                    <Button Width="250" Height="250" Margin="10" Click="exerciseClicked">Arm abduction</Button>
-                    <Button Width="250" Height="250" Margin="10">B</Button>
-                    <Button Width="250" Height="250" Margin="10">B</Button>
-                    <Button Width="250" Height="250" Margin="10">B</Button>
-                    <Button Width="250" Height="250" Margin="10">B</Button>
+                    <Button Width="250" Height="250" Margin="10">
+                        <StackPanel>
+                            <Image Width="150" Margin="10" Source="res/images/01.png" />
+                            <Label HorizontalAlignment="Center">Ex. name</Label>
+                        </StackPanel>
+                    </Button>
+                    <Button Width="250" Height="250" Margin="10" Click="exerciseClicked">
+                        <StackPanel>
+                            <Image Width="150" Margin="10" Source="res/images/02.png" />
+                            <Label HorizontalAlignment="Center">Arm abduction</Label>
+                        </StackPanel>
+                    </Button>
+                    <Button Width="250" Height="250" Margin="10">
+                        <StackPanel>
+                            <Image Width="150" Margin="10" Source="res/images/03.png" />
+                            <Label HorizontalAlignment="Center">Ex. name</Label>
+                        </StackPanel>
+                    </Button>
+                    <Button Width="250" Height="250" Margin="10">
+                        <StackPanel>
+                            <Image Width="150" Margin="10" Source="res/images/01.png" />
+                            <Label HorizontalAlignment="Center">Ex. name</Label>
+                        </StackPanel>
+                    </Button>
+                    <Button Width="250" Height="250" Margin="10">
+                        <StackPanel>
+                            <Image Width="150" Margin="10" Source="res/images/03.png" />
+                            <Label HorizontalAlignment="Center">Ex. name</Label>
+                        </StackPanel>
+                    </Button>
+                    <Button Width="250" Height="250" Margin="10">
+                        <StackPanel>
+                            <Image Width="150" Margin="10" Source="res/images/01.png" />
+                            <Label HorizontalAlignment="Center">Ex. name</Label>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </ScrollViewer>
 

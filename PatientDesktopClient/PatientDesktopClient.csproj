@@ -149,6 +149,24 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Content Include="res\materials\floor.material">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\materials\textures\rockwall.tga">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="res\images\fluidity_warning.png" />
+    <Resource Include="res\images\progress_warning.png" />
+    <Resource Include="res\images\main.png" />
+    <Resource Include="res\images\next.png" />
+    <Resource Include="res\images\play.png" />
+    <Resource Include="res\images\power.png" />
+    <Resource Include="res\images\prev.png" />
+    <Resource Include="res\images\profile.png" />
+    <Resource Include="res\images\settings.png" />
+    <Content Include="res\materials\textures\wood.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="res\models\character_male\character_male.material">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

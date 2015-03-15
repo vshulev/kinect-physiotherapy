@@ -25,7 +25,6 @@ namespace PatientDesktopClient
             createEntity(mgr);
             initializeSkeleton();
             BodyDataReader.Instance.BodyDataRead += bodyDataRead;
-            GestureScorer gs = GestureScorer.Instance;
             //GestureScorer.Instance.GestureScoreUpdated += gestureScoreUpdated;
         }
 
@@ -50,6 +49,8 @@ namespace PatientDesktopClient
             mapping = new Dictionary<string, JointPair>();
             mapping.Add("upper_arm.L", new JointPair(JointType.ShoulderRight, JointType.ElbowRight));
             mapping.Add("forearm.L", new JointPair(JointType.ElbowRight, JointType.WristRight));
+            mapping.Add("upper_arm.R", new JointPair(JointType.ShoulderLeft, JointType.ElbowLeft));
+            mapping.Add("forearm.R", new JointPair(JointType.ElbowLeft, JointType.WristLeft));
         }
 
         private void createEntity(SceneManager mgr)
@@ -65,6 +66,8 @@ namespace PatientDesktopClient
             skeleton = entity.Skeleton;
             foreach (Bone b in skeleton.GetBoneIterator())
             {
+                string s = b.Name;
+                Console.WriteLine(b.Name);
                 b.SetManuallyControlled(true);
                 b.InheritOrientation = true;
                 b.InheritScale = true;

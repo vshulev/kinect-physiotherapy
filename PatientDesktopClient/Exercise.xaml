@@ -14,14 +14,33 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="8*" />
+            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="100" Height="100" Margin="10" Click="mainClicked">Main</Button>
-            <Button Width="100" Height="100" Margin="10" Click="exitClicked">Exit</Button>
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="100" Height="100" Margin="10" Click="mainClicked">
+                <Image Margin="10" Source="res/images/main.png" />
+            </Button>
+            <Button Width="100" Height="100" Margin="10" Click="exitClicked">
+                <Image Margin="10" Source="res/images/power.png" />
+            </Button>
         </StackPanel>
 
-        <Image Grid.Column="0" Grid.Row="1" Stretch="Fill" x:Name="d3dImage" />
+        <StackPanel Grid.Column="0" Grid.Row="1">
+            <Image Width="100" Height="100" Margin="10" x:Name="fluidity"  Visibility="Collapsed" Source="res/images/fluidity_warning.png" />
+            <Image Width="100" Height="100" Margin="10" x:Name="progress" Visibility="Collapsed" Source="res/images/progress_warning.png" />
+            <Image Width="100" Height="100" Margin="10" x:Name="speed" Visibility="Collapsed" Source="res/images/fluidity_warning.png" />
+        </StackPanel>
+        
+        <Image Grid.Column="1" Grid.Row="1" Margin="10" Stretch="Fill" x:Name="d3dImage" />
+        
+        <StackPanel Grid.Column="2" Grid.Row="1">
+            <Label Margin="10" x:Name="reps">Repetitions 0 / 5</Label>
+            <Label Margin="10">Sets 0 / 2</Label>
+            <Label Margin="10" x:Name="fluidityVal">...</Label>
+        </StackPanel>
+        
     </Grid>
 </Page>

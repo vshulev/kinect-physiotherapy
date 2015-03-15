@@ -23,21 +23,38 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
-                <Button Width="100" Height="100" Margin="10">Profile</Button>
+                <Button Width="100" Height="100" Margin="10">
+                    <Image Margin="10" Source="res/images/profile.png" />
+                </Button>
             </StackPanel>
             
             <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Width="100" Height="100" Margin="10" Click="mainClicked">Main</Button>
-                <Button Width="100" Height="100" Margin="10">Previous</Button>
-                <Button Width="100" Height="100" Margin="10">Next</Button>
-                <Button Width="100" Height="100" Margin="10" Click="exitClicked">Exit</Button>
+                <Button Width="100" Height="100" Margin="10" Click="mainClicked">
+                    <Image Margin="10" Source="res/images/main.png" />
+                </Button>
+                <Button Width="100" Height="100" Margin="10">
+                    <Image Margin="10" Source="res/images/prev.png" />
+                </Button>
+                <Button Width="100" Height="100" Margin="10">
+                    <Image Margin="10" Source="res/images/next.png" />
+                </Button>
+                <Button Width="100" Height="100" Margin="10" Click="exitClicked">
+                    <Image Margin="10" Source="res/images/power.png" />
+                </Button>
             </StackPanel>
 
             <kinect:KinectUserViewer Grid.Column="0" Grid.Row="1" Margin="10" />
+            <Button Grid.Column="0" Grid.Row="1" Margin="150" Click="startClicked">Start</Button>
             <Image Grid.Column="1" Grid.Row="1" Margin="100" Source="res/images/chart.png" />
             <Image Grid.Column="2" Grid.Row="1" Margin="10" Source="res/images/video.png" />
         
-            <Button Grid.Column="0" Grid.Row="2" Click="startClicked">Instructions</Button>
+            <TextBlock Grid.Column="0" Grid.Row="2" Margin="20" TextWrapping="WrapWithOverflow">
+                Please stand still in front of the Kinect sensor until the start button appears. This may take a few seconds.
+            </TextBlock>
+            
+            <TextBlock Grid.Column="1" Grid.Row="2" Margin="20" TextWrapping="WrapWithOverflow">
+                {Insert text explaining the meaning of each icon which pops up in the exercise screen}
+            </TextBlock>
 
         </Grid>
     </kinect:KinectRegion>
