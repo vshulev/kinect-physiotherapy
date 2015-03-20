@@ -6,6 +6,7 @@ namespace PatientDesktopClient
 {
 
     delegate void GestureScoreUpdatedHandler(object source, GestureScoreUpdatedEventArgs e);
+    delegate void ProgressUpdatedHandler(object source, ProgressUpdatedEventArgs e);
 
     class GestureScorer
     {
@@ -13,6 +14,7 @@ namespace PatientDesktopClient
 
         public static readonly GestureScorer Instance = new GestureScorer();
         public event GestureScoreUpdatedHandler GestureScoreUpdated;
+        public event ProgressUpdatedHandler ProgressUpdated;
 
         private List<float> results;
 
@@ -28,21 +30,18 @@ namespace PatientDesktopClient
         // fired after a repetition is completed.
         private void gestureResultChanged(object source, GestureResultChangedEventArgs e)
         {
+            ProgressUpdated(this, new ProgressUpdatedEventArgs() {
+                progress = e.Result
+            });
+            
             results.Add(e.Result);
 
             if (e.Result <= ERROR_MARGIN && results.Count != 1 && results[results.Count - 2] > ERROR_MARGIN)
             {
-                // compute progress (i.e. find max value in list)
-
-                // compute fluidity (i.e. find std. dev of values ERROR_MARGIN apart)
-
-                // compute speed (i.e. change between values ERROR_MARGIN(?) apart)
-
-                // TODO compute posture - need to know discrete gesture confidence
-
                 if (GestureScoreUpdated != null)
                 {
                     GestureScoreUpdated(this, new GestureScoreUpdatedEventArgs() {
+                        // TODO capitalize first letter!
                         isProgressGood = computeProgress(),
                         isFluidityGood = computeFluidity(),
                         isSpeedGood = computeSpeed(),
@@ -110,4 +109,14 @@ namespace PatientDesktopClient
         public GestureScoreUpdatedEventArgs() { }
 
     }
+
+    class ProgressUpdatedEventArgs : EventArgs
+    {
+
+        public float progress;
+
+        public ProgressUpdatedEventArgs() { }
+
+    }
+
 }

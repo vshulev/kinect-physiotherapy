@@ -17,6 +17,11 @@ namespace PatientDesktopClient
             get;
             private set;
         }
+        public int BodyCount
+        {
+            get;
+            private set;
+        }
 
         private Body[] bodies;
         private IReadOnlyDictionary<JointType, Joint> joints;
@@ -27,6 +32,7 @@ namespace PatientDesktopClient
             KinectSensor sensor = KinectSensor.GetDefault();
             BodyFrameReader reader = sensor.BodyFrameSource.OpenReader();
             reader.FrameArrived += frameArrived;
+            BodyCount = 0;
             bodies = new Body[sensor.BodyFrameSource.BodyCount];
             sensor.Open();
         }
@@ -43,7 +49,8 @@ namespace PatientDesktopClient
                     bodyFrame.GetAndRefreshBodyData(bodies);
                     storeJointData();
                     // TODO use BeginInvoke instead
-                    BodyDataRead(this, new BodyDataReadEventArgs(joints, jointOrientations));
+                    if(joints != null && jointOrientations != null)
+                        BodyDataRead(this, new BodyDataReadEventArgs(joints, jointOrientations));
                     //BodyDataRead.BeginInvoke(this, new BodyDataReadEventArgs(joints, jointOrientations), null, null);
                 }
             }
@@ -52,11 +59,15 @@ namespace PatientDesktopClient
 
         private void storeJointData()
         {
+            
+
             CurrentTrackingId = 0;
+            BodyCount = 0;
             for (int i = 0; i < bodies.Length; i++)
             {
                 if (bodies[i].IsTracked)
                 {
+                    BodyCount++;
                     joints = bodies[i].Joints;
                     jointOrientations = bodies[i].JointOrientations;
                     CurrentTrackingId = bodies[i].TrackingId;

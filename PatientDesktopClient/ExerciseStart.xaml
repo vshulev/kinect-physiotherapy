@@ -12,8 +12,8 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
-                <RowDefinition Height="5*" />
-                <RowDefinition Height="3*" />
+                <RowDefinition Height="8*" />
+                <!--<RowDefinition Height="3*" />-->
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -43,18 +43,18 @@
                 </Button>
             </StackPanel>
 
-            <kinect:KinectUserViewer Grid.Column="0" Grid.Row="1" Margin="10" />
-            <Button Grid.Column="0" Grid.Row="1" Margin="150" Click="startClicked">Start</Button>
-            <Image Grid.Column="1" Grid.Row="1" Margin="100" Source="res/images/chart.png" />
+            <!--<kinect:KinectUserViewer Grid.Column="0" Grid.Row="1" Margin="10" />-->
+            <Button Grid.Column="0" Grid.Row="1" Margin="150" Height="150" Click="startClicked">Start</Button>
+            <Image Grid.Column="1" Grid.Row="1" Margin="10" Source="res/images/chart2.png" />
             <Image Grid.Column="2" Grid.Row="1" Margin="10" Source="res/images/video.png" />
         
-            <TextBlock Grid.Column="0" Grid.Row="2" Margin="20" TextWrapping="WrapWithOverflow">
+            <!--<TextBlock Grid.Column="0" Grid.Row="2" Margin="20" TextWrapping="WrapWithOverflow">
                 Please stand still in front of the Kinect sensor until the start button appears. This may take a few seconds.
-            </TextBlock>
+            </TextBlock>-->
             
-            <TextBlock Grid.Column="1" Grid.Row="2" Margin="20" TextWrapping="WrapWithOverflow">
+            <!--<TextBlock Grid.Column="1" Grid.Row="2" Margin="20" TextWrapping="WrapWithOverflow">
                 {Insert text explaining the meaning of each icon which pops up in the exercise screen}
-            </TextBlock>
+            </TextBlock>-->
 
         </Grid>
     </kinect:KinectRegion>
