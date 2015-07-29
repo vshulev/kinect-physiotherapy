@@ -128,7 +128,8 @@
                 </fk:ElementFlow.Camera>
             </fk:ElementFlow>-->
 
-            <Image Grid.Column="1" Grid.Row="10" Margin="10" Source="res/images/chart.png" />
+            <!--<Image Grid.Column="1" Grid.Row="1" Margin="10" Source="res/images/chart.png" />-->
+            <Image Grid.Column="1" Grid.Row="1" Margin="10" Source="res/images/chart.png" />
         </Grid>
     </kinect:KinectRegion>
 </Page>

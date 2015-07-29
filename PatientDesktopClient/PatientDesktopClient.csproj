@@ -160,6 +160,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="res\images\chart2.png" />
+    <Resource Include="res\images\chart_old.png" />
     <Content Include="res\materials\floor.material">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
