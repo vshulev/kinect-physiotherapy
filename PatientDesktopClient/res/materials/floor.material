@@ -1,0 +1,13 @@
+﻿material Main/Floor
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture textures/rockwall.tga
+			}
+		}
+	}
+}

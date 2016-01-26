@@ -1,0 +1,52 @@
+﻿<Page x:Class="PatientDesktopClient.Exercise"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      xmlns:kinect="http://schemas.microsoft.com/kinect/2014"
+      d:DesignHeight="300" d:DesignWidth="300"
+	Title="Exercise">
+
+    <kinect:KinectRegion x:Name="kinectRegion">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="8*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="8*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Width="100" Height="100" Margin="10" Click="mainClicked">
+                    <Image Margin="10" Source="res/images/main.png" />
+                </Button>
+                <Button Width="100" Height="100" Margin="10" Click="exitClicked">
+                    <Image Margin="10" Source="res/images/power.png" />
+                </Button>
+            </StackPanel>
+
+            <StackPanel Grid.Column="0" Grid.Row="1">
+                <Image Width="100" Height="100" Margin="10" x:Name="fluidity"  Visibility="Collapsed" Source="res/images/fluidity_warning.png" />
+                <Image Width="100" Height="100" Margin="10" x:Name="progress" Visibility="Collapsed" Source="res/images/progress_warning.png" />
+                <Image Width="100" Height="100" Margin="10" x:Name="speed" Visibility="Collapsed" Source="res/images/fluidity_warning.png" />
+            </StackPanel>
+        
+            <Image Grid.Column="1" Grid.Row="1" Margin="10" Stretch="Fill" x:Name="d3dImage" />
+        
+            <StackPanel Grid.Column="2" Grid.Row="1">
+                <Label Margin="10" x:Name="reps">Repetitions 0 / 16</Label>
+                <Label Margin="10" x:Name="sets">Sets 0 / 1</Label>
+                <!--<Label Margin="10" x:Name="fluidityVal">...</Label>-->
+
+                <Label Margin="10">Progress:</Label>
+                <ProgressBar Minimum="0" Maximum="100" x:Name="progressBar" Height="50" Margin="10" />
+            </StackPanel>
+        
+        </Grid>
+    </kinect:KinectRegion>
+</Page>
